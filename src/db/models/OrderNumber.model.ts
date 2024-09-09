@@ -28,7 +28,7 @@ OrderNumberModel.init(
     number: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      unique: true,
+      unique: false,
     },
     following_id: {
       type: DataTypes.UUID,

@@ -1,6 +1,8 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../db';
 import { FollowingProviderType } from './interfaces';
+import { ProviderModel } from './index';
+import FollowingModel from './Following.model';
 
 export interface FollowingProviderInput
   extends Optional<FollowingProviderType, 'id'> {}
@@ -52,5 +54,17 @@ FollowingProviderModel.init(
     paranoid: true,
   }
 );
+
+FollowingModel.belongsToMany(ProviderModel, {
+  through: FollowingProviderModel, // Name of the junction table
+  foreignKey: 'following_id', // Foreign key in the junction table for Followings
+  otherKey: 'provider_id', // Foreign key in the junction table for Providers
+});
+
+ProviderModel.belongsToMany(FollowingModel, {
+  through: FollowingProviderModel,
+  foreignKey: 'provider_id',
+  otherKey: 'following_id',
+});
 
 export default FollowingProviderModel;
