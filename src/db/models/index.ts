@@ -12,12 +12,7 @@ import OrderNumberModel from './OrderNumber.model';
 import IsDocsModel from './IsDoc.model';
 import DeclarationModel from './Declaration.model';
 import DeclarationStatusModel from './DeclarationStatus.model';
-import FollowingStoreModel from './FollowingStore.model';
 import FollowingProviderModel from './FollowingProvider.model';
-import FollowingDeliveryMethodModel from './FollowingDeliveryMethod.model';
-import FollowingDeliveryChannelModel from './FollowingDeliveryChannel.model';
-import FollowingContainerTypeModel from './FollowingContainerType.model';
-import FollowingStockPlaceModel from './FollowingStockPlace.model';
 
 export {
   StoreModel,
@@ -34,10 +29,5 @@ export {
   IsDocsModel,
   DeclarationModel,
   DeclarationStatusModel,
-  FollowingStoreModel,
   FollowingProviderModel,
-  FollowingDeliveryMethodModel,
-  FollowingDeliveryChannelModel,
-  FollowingContainerTypeModel,
-  FollowingStockPlaceModel,
 };
