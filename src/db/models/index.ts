@@ -7,7 +7,7 @@ import DeliveryMethodModel from './DeliveryMethod.model';
 import CalculatedDateModel from './CalculatedDate.model';
 import KmToDistCalculateModel from './KmToDistCalculate.model';
 import FollowingModel from './Following.model';
-import ProductModel from './Product.model';
+import SimpleProductModel from './SimpleProduct.model';
 import OrderNumberModel from './OrderNumber.model';
 import IsDocsModel from './IsDoc.model';
 import DeclarationModel from './Declaration.model';
@@ -24,7 +24,7 @@ export {
   CalculatedDateModel,
   KmToDistCalculateModel,
   FollowingModel,
-  ProductModel,
+  SimpleProductModel,
   OrderNumberModel,
   IsDocsModel,
   DeclarationModel,

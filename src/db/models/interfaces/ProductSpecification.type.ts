@@ -1,8 +1,8 @@
 import { TimeStampsType } from './TimeStamps.type';
 
-export interface ProductType extends TimeStampsType {
+export interface ProductSpecificationType extends TimeStampsType {
   id: string;
-  simple_name: string;
+  simple_product_id: string;
   hs_code: string;
   article_ved: string;
   article_erp: string;
@@ -18,5 +18,4 @@ export interface ProductType extends TimeStampsType {
   weight_net: number;
   weight_gross: number;
   cbm: number;
-  following_id: string;
 }

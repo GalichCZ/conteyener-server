@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import ProductRepository from '../db/repositories/product.repository';
+import SimpleProductRepository from '../db/repositories/simpleProduct.repository';
 
 class ProductController {
-  private _productRepository = new ProductRepository();
+  private _productRepository = new SimpleProductRepository();
 
   createProduct = async (req: Request, res: Response) => {
     try {

@@ -1,16 +1,36 @@
 import { DataTypes, Model, Optional } from 'sequelize';
-import { ProductType } from './interfaces';
 import sequelize from '../db';
+import { SimpleProductModel } from './index';
+import { ProductSpecificationType } from './interfaces';
 
-export interface ProductInput extends Optional<ProductType, 'id'> {}
-export interface ProductOutput extends Required<ProductType> {}
+export interface ProductSpecificationInput
+  extends Optional<
+    ProductSpecificationType,
+    | 'id'
+    | 'hs_code'
+    | 'article_ved'
+    | 'article_erp'
+    | 'trade_mark'
+    | 'model'
+    | 'modification'
+    | 'product_name'
+    | 'manufacturer'
+    | 'quantity_pieces'
+    | 'quantity_places'
+    | 'piece_price'
+    | 'total_price'
+    | 'weight_net'
+    | 'weight_gross'
+    | 'cbm'
+  > {}
+export interface ProductSpecificationOutput
+  extends Required<ProductSpecificationType> {}
 
-class ProductModel
-  extends Model<ProductType, ProductInput>
-  implements ProductType
+class ProductSpecificationModel
+  extends Model<ProductSpecificationType, ProductSpecificationInput>
+  implements ProductSpecificationType
 {
   public id!: string;
-  public simple_name!: string;
   public hs_code!: string;
   public article_ved!: string;
   public cbm!: number;
@@ -25,7 +45,7 @@ class ProductModel
   public piece_price!: number;
   public quantity_places!: number;
   public quantity_pieces!: number;
-  public following_id!: string;
+  public simple_product_id!: string;
   public article_erp!: string;
 
   public readonly created_at!: Date;
@@ -33,15 +53,12 @@ class ProductModel
   public readonly updated_at!: Date;
 }
 
-ProductModel.init(
+ProductSpecificationModel.init(
   {
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4,
-    },
-    simple_name: {
-      type: DataTypes.STRING(255),
     },
     hs_code: {
       type: DataTypes.STRING(255),
@@ -88,23 +105,33 @@ ProductModel.init(
     cbm: {
       type: DataTypes.FLOAT,
     },
-    following_id: {
+    simple_product_id: {
       type: DataTypes.UUID,
 
       references: {
-        model: 'followings',
+        model: 'simple_products',
         key: 'id',
       },
     },
   },
   {
     sequelize,
-    modelName: 'products',
-    tableName: 'products',
+    modelName: 'product_specifications',
+    tableName: 'product_specifications',
     timestamps: true,
     paranoid: true,
     underscored: true,
   }
 );
 
-export default ProductModel;
+SimpleProductModel.hasMany(ProductSpecificationModel, {
+  foreignKey: 'following_id',
+  as: 'products',
+});
+
+ProductSpecificationModel.belongsTo(SimpleProductModel, {
+  foreignKey: 'following_id',
+  as: 'following',
+});
+
+export default ProductSpecificationModel;

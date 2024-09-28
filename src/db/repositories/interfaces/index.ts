@@ -12,7 +12,7 @@ export * from './isDocs-repository.interface';
 export * from './orderNumber-repository.interface';
 export * from './declaration-repository.interface';
 export * from './declarationStatus-repository.interface';
-export * from './prodcut-repository.interface';
+export * from './simpleProdcut-repository.interface';
 export * from './followingProvider-repository.interface';
 export * from './followingDeliveryChannel-repository.interface';
 export * from './followingStockPlace-repository.interface';
