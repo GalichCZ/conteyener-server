@@ -3,6 +3,8 @@ import {
   OrderNumberInput,
   OrderNumberOutput,
 } from '../../models/OrderNumber.model';
+import { Transaction } from 'sequelize';
+import { OrderNumber } from '../../../services/types/FollowingBody';
 
 export interface IOrderNumberRepository
   extends IBaseRepository<OrderNumberInput, OrderNumberOutput> {
@@ -12,4 +14,12 @@ export interface IOrderNumberRepository
     following_id: string
   ): Promise<OrderNumberOutput[]>;
   deleteByFollowingId(following_id: string): Promise<boolean>;
+  deleteMissingOrderNumbers(
+    missingIds: string[],
+    transaction?: Transaction
+  ): Promise<boolean>;
+  updateManyByOrderNumberIds(
+    order_numbers_input: OrderNumber[],
+    transaction?: Transaction
+  ): Promise<boolean>;
 }

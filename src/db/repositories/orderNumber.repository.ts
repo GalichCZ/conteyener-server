@@ -3,8 +3,9 @@ import {
   OrderNumberInput,
   OrderNumberOutput,
 } from '../models/OrderNumber.model';
-import { IOrderNumberRepository } from './interfaces/orderNumber-repository.interface';
+import { IOrderNumberRepository } from './interfaces';
 import { Op, Transaction } from 'sequelize';
+import { OrderNumber } from '../../services/types/FollowingBody';
 
 class OrderNumberRepository implements IOrderNumberRepository {
   async create(input: OrderNumberInput): Promise<OrderNumberOutput> {
@@ -14,7 +15,8 @@ class OrderNumberRepository implements IOrderNumberRepository {
 
   async update(
     id: string,
-    input: Partial<OrderNumberInput>
+    input: Partial<OrderNumberInput>,
+    transaction?: Transaction
   ): Promise<OrderNumberOutput | null> {
     const orderNumber = await OrderNumberModel.findByPk(id);
     if (!orderNumber) {
@@ -40,6 +42,38 @@ class OrderNumberRepository implements IOrderNumberRepository {
     const options = transaction ? { transaction } : {};
     const deletedCount = await OrderNumberModel.destroy({
       where: { following_id },
+      ...options,
+    });
+
+    return deletedCount > 0;
+  }
+
+  async updateManyByOrderNumberIds(
+    order_numbers_input: OrderNumber[],
+    transaction?: Transaction
+  ): Promise<boolean> {
+    const inputOrderNumbersWithIds = order_numbers_input.filter((n) => n.id);
+
+    for (const inputOrderNumbersWithId of inputOrderNumbersWithIds) {
+      const orderNumber = await this.findById(inputOrderNumbersWithId.id);
+      if (!orderNumber) {
+        return false;
+      }
+
+      await this.update(orderNumber.id, inputOrderNumbersWithId, transaction);
+    }
+
+    return true;
+  }
+
+  async deleteMissingOrderNumbers(
+    missingIds: string[],
+    transaction?: Transaction
+  ): Promise<boolean> {
+    const options = transaction ? { transaction } : {};
+
+    const deletedCount = await OrderNumberModel.destroy({
+      where: { id: { [Op.in]: missingIds } },
       ...options,
     });
 
