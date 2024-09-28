@@ -25,4 +25,10 @@ export interface FollowingType extends TimeStampsType {
   pickup: string | null;
   fraht: string | null;
   hidden: boolean;
+
+  store_id: string | null;
+  stock_place_id: string | null;
+  delivery_channel_id: string | null;
+  container_type_id: string | null;
+  delivery_method_id: string | null;
 }

@@ -15,4 +15,6 @@ router.post(
 );
 
 router.delete('/following/:id', _followingController.deleteFollowing);
+
+router.put('/following/:id', _followingController.updateFollowing);
 export default router;

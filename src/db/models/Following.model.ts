@@ -7,8 +7,7 @@ import {
   DeliveryChannelModel,
   ContainerTypeModel,
   DeliveryMethodModel,
-  ProviderModel,
-  FollowingProviderModel,
+  OrderNumberModel,
 } from './index';
 
 export interface FollowingInput
@@ -254,5 +253,10 @@ FollowingModel.belongsTo(DeliveryMethodModel, {
   as: 'deliveryMethod',
   onDelete: 'SET NULL',
 });
+
+// FollowingModel.hasMany(OrderNumberModel, {
+//   foreignKey: 'following_id',
+//   as: 'order_numbers',
+// });
 
 export default FollowingModel;

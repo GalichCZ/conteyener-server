@@ -1,7 +1,22 @@
 import { IFollowingRepository } from './interfaces';
-import { FollowingInput, FollowingOutput } from '../models/Following.model';
-import { DeliveryChannelModel, FollowingModel, StoreModel } from '../models';
+import followingModel, {
+  FollowingInput,
+  FollowingOutput,
+} from '../models/Following.model';
+import {
+  ContainerTypeModel,
+  DeclarationModel,
+  DeliveryChannelModel,
+  DeliveryMethodModel,
+  FollowingModel,
+  OrderNumberModel,
+  SimpleProductModel,
+  ProviderModel,
+  StockPlaceModel,
+  StoreModel,
+} from '../models';
 import { Transaction } from 'sequelize';
+import { FollowingType } from '../models/interfaces';
 
 class FollowingRepository implements IFollowingRepository {
   async create(
@@ -16,7 +31,7 @@ class FollowingRepository implements IFollowingRepository {
 
   async update(
     id: string,
-    followingInput: Partial<FollowingInput>
+    followingInput: Partial<FollowingType>
   ): Promise<FollowingOutput | null> {
     const following = await FollowingModel.findByPk(id);
     if (!following) {
@@ -37,8 +52,12 @@ class FollowingRepository implements IFollowingRepository {
     return deletedCount > 0;
   }
 
-  async findById(id: string): Promise<FollowingOutput | null> {
-    const following = await FollowingModel.findByPk(id);
+  async findById(
+    id: string,
+    transaction?: Transaction
+  ): Promise<FollowingOutput | null> {
+    const options = transaction ? { transaction } : {};
+    const following = await FollowingModel.findByPk(id, { ...options });
     if (!following) {
       return null;
     }
@@ -48,9 +67,64 @@ class FollowingRepository implements IFollowingRepository {
 
   async findAll(): Promise<FollowingOutput[]> {
     const followings = await FollowingModel.findAll({
-      include: [DeliveryChannelModel, StoreModel],
+      include: [
+        {
+          model: DeliveryChannelModel,
+          as: 'deliveryChannel', // Alias for the DeliveryChannelModel
+        },
+        {
+          model: StoreModel,
+          as: 'store', // Alias for the StoreModel
+        },
+        {
+          model: StockPlaceModel,
+          as: 'stockPlace', // Alias for the StockPlaceModel
+        },
+        {
+          model: ContainerTypeModel,
+          as: 'containerType', // Alias for the ContainerTypeModel
+        },
+        {
+          model: DeliveryMethodModel,
+          as: 'deliveryMethod', // Alias for the DeliveryMethodModel
+        },
+        {
+          model: ProviderModel,
+          as: 'providers', // Alias for the ProviderModel
+        },
+        {
+          model: OrderNumberModel, // Include OrderNumberModel
+          as: 'order_numbers', // Alias used in the hasMany relationship
+        },
+        {
+          model: DeclarationModel,
+          as: 'declarations',
+        },
+        {
+          model: SimpleProductModel,
+          as: 'simple_products',
+        },
+      ],
     });
     return followings.map((following) => following.toJSON() as FollowingOutput);
+  }
+
+  async findByContainerNumber(
+    container_number: string,
+    transaction?: Transaction
+  ): Promise<FollowingOutput | null> {
+    const options = transaction ? { transaction } : {};
+
+    const following = await followingModel.findOne({
+      where: { hidden: false, container_number },
+      ...options,
+    });
+
+    if (!following) {
+      return null;
+    }
+
+    return following.toJSON() as FollowingOutput;
   }
 
   async startTransaction(): Promise<Transaction> {
