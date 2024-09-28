@@ -50,3 +50,5 @@ class DeliveryChannelRepository implements IDeliveryChannelRepository {
     );
   }
 }
+
+export default DeliveryChannelRepository;
