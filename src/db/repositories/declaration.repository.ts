@@ -4,11 +4,46 @@ import {
   DeclarationOutput,
 } from '../models/Declaration.model';
 import { IDeclarationRepository } from './interfaces/declaration-repository.interface';
-import { Transaction } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
+import { getMissingStringsFromInput } from '../../utils/getMissingStringsFromInput';
 
 class DeclarationRepository implements IDeclarationRepository {
-  async create(input: DeclarationInput): Promise<DeclarationOutput> {
-    const declaration = await DeclarationModel.create(input);
+  async deleteMissingDeclarations(
+    inputIds: string[],
+    following_id: string,
+    transaction?: Transaction
+  ): Promise<boolean> {
+    const options = transaction ? { transaction } : {};
+    const declarations = await this.getDeclarationsByFollowingId(
+      following_id,
+      transaction
+    );
+    const declarationIds = declarations.map((d) => d.id);
+    const missingIds = getMissingStringsFromInput(inputIds, declarationIds);
+    const deletedCount = await DeclarationModel.destroy({
+      where: { id: { [Op.in]: missingIds } },
+      ...options,
+    });
+    return deletedCount > 0;
+  }
+
+  async getDeclarationsByFollowingId(
+    following_id: string,
+    transaction?: Transaction
+  ): Promise<DeclarationOutput[]> {
+    const options = transaction ? { transaction } : {};
+    return await DeclarationModel.findAll({
+      where: { following_id },
+      ...options,
+    });
+  }
+
+  async create(
+    input: DeclarationInput,
+    transaction?: Transaction
+  ): Promise<DeclarationOutput> {
+    const options = transaction ? { transaction } : {};
+    const declaration = await DeclarationModel.create(input, { ...options });
     return declaration.toJSON() as DeclarationOutput;
   }
 

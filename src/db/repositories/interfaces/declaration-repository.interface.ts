@@ -12,4 +12,13 @@ export interface IDeclarationRepository
     id: string,
     transaction?: Transaction
   ): Promise<DeclarationOutput[]>;
+  deleteMissingDeclarations(
+    inputIds: string[],
+    following_id: string,
+    transaction?: Transaction
+  ): Promise<boolean>;
+  getDeclarationsByFollowingId(
+    following_id: string,
+    transaction?: Transaction
+  ): Promise<DeclarationOutput[]>;
 }
