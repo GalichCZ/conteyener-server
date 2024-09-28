@@ -1,6 +1,7 @@
 import { IStockPlaceRepository } from './interfaces/stockPlace-repository.interface';
 import { StockPlaceInput, StockPlaceOutput } from '../models/StockPlace.model';
 import { StockPlaceModel } from '../models';
+import { Transaction } from 'sequelize';
 
 class StockPlaceRepository implements IStockPlaceRepository {
   async create(stockPlaceInput: StockPlaceInput): Promise<StockPlaceOutput> {
@@ -29,8 +30,12 @@ class StockPlaceRepository implements IStockPlaceRepository {
     return deletedCount > 0;
   }
 
-  async findById(id: string): Promise<StockPlaceOutput | null> {
-    const stockPlace = await StockPlaceModel.findByPk(id);
+  async findById(
+    id: string,
+    transaction?: Transaction
+  ): Promise<StockPlaceOutput | null> {
+    const options = transaction ? { transaction } : {};
+    const stockPlace = await StockPlaceModel.findByPk(id, { ...options });
     if (!stockPlace) {
       return null;
     }
