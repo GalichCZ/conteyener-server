@@ -20,6 +20,21 @@ class CalculatedDateRepository implements ICalculatedDateRepository {
     return deletedCount > 0;
   }
 
+  async findByFollowingId(
+    followingId: string,
+    transaction?: Transaction
+  ): Promise<CalculatedDateOutput | null> {
+    const options = transaction ? { transaction } : {};
+    const record = await CalculatedDateModel.findOne({
+      where: { following_id: followingId },
+      ...options,
+    });
+    if (!record) {
+      return null;
+    }
+    return record.toJSON() as CalculatedDateOutput;
+  }
+
   async create(input: CalculatedDateInput): Promise<CalculatedDateOutput> {
     const record = await CalculatedDateModel.create(input);
     return record.toJSON() as CalculatedDateOutput;
@@ -27,7 +42,8 @@ class CalculatedDateRepository implements ICalculatedDateRepository {
 
   async update(
     id: string,
-    input: Partial<CalculatedDateInput>
+    input: Partial<CalculatedDateInput>,
+    transaction?: Transaction
   ): Promise<CalculatedDateOutput | null> {
     const record = await CalculatedDateModel.findByPk(id);
     if (!record) {
@@ -58,6 +74,10 @@ class CalculatedDateRepository implements ICalculatedDateRepository {
   async findAll(): Promise<CalculatedDateOutput[]> {
     const records = await CalculatedDateModel.findAll();
     return records.map((record) => record.toJSON() as CalculatedDateOutput);
+  }
+
+  async startTransaction() {
+    return await CalculatedDateModel.sequelize!.transaction();
   }
 }
 
