@@ -10,8 +10,8 @@ import {
   DeliveryMethodModel,
   FollowingModel,
   OrderNumberModel,
-  SimpleProductModel,
   ProviderModel,
+  SimpleProductModel,
   StockPlaceModel,
   StoreModel,
 } from '../models';
@@ -57,7 +57,19 @@ class FollowingRepository implements IFollowingRepository {
     transaction?: Transaction
   ): Promise<FollowingOutput | null> {
     const options = transaction ? { transaction } : {};
-    const following = await FollowingModel.findByPk(id, { ...options });
+    const following = await FollowingModel.findByPk(id, {
+      include: [
+        {
+          model: DeliveryMethodModel,
+          as: 'deliveryMethod', // Alias for the DeliveryMethodModel
+        },
+        {
+          model: DeliveryChannelModel,
+          as: 'deliveryChannel', // Alias for the DeliveryChannelModel
+        },
+      ],
+      ...options,
+    });
     if (!following) {
       return null;
     }

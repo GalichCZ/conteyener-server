@@ -70,7 +70,7 @@ export const FollowingSchema = z.object({
       message: 'Агент не может быть null',
     }),
 
-  order_number: z
+  order_numbers: z
     .union([
       z.string().array().min(1, 'Номер заказа не может быть пустым'),
       z.null(),

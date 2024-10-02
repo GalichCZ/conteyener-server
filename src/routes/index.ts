@@ -6,6 +6,7 @@ import DeliveryMethodRoute from './deliveryMethod.route';
 import ContainerTypeRoute from './containerType.route';
 import DeliveryChannelRoute from './deliveryChannel.route';
 import ProviderRoute from './provider.route';
+import CalculateDateRoute from './calculateDate.route';
 
 const routes = [
   StoreRoute,
@@ -16,6 +17,7 @@ const routes = [
   ContainerTypeRoute,
   DeliveryChannelRoute,
   ProviderRoute,
+  CalculateDateRoute,
 ];
 
 export default routes;
