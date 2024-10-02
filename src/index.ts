@@ -4,31 +4,49 @@ import sequelize from './db/db';
 import routes from './routes';
 import bodyParser from 'body-parser';
 import { errorHandler } from './error-handler/error-handler';
+import { setUpAssociations } from './db/models/associations';
+import dbInit from './db/models/dbInit';
+
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Initialize Sequelize
-// Test database connection
-sequelize
-  .authenticate()
-  .then(() => console.log('Database connected.'))
-  .catch((err) => console.log('Error: ' + err));
-
-app.use(bodyParser.json());
 // Middleware
+app.use(bodyParser.json());
 app.use(express.json());
-routes.forEach((route) => app.use('/api', route));
+
+// Test database connection and start server
+const startServer = async () => {
+  try {
+    setUpAssociations(); // Set up associations before syncing
+
+    // Initialize the database and synchronize models
+    // await dbInit(); // Call the dbInit function
+
+    // Test database connection
+    await sequelize.authenticate();
+    console.log('Database connected.');
+
+    // Start the server
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  } catch (err) {
+    console.error('Failed to start server:', err);
+    process.exit(1); // Exit the process if initialization fails
+  }
+};
 
 // Routes
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
 
-//error handler
+routes.forEach((route) => app.use('/api', route));
+
+// Error handler
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// Start the application
+startServer();

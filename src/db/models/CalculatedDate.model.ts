@@ -12,17 +12,17 @@ class CalculatedDateModel
 {
   public id!: string;
   public etd!: Date;
-  public eta!: Date;
+  public eta!: Date | null;
   public eta_update!: boolean;
-  public date_do!: Date;
+  public date_do!: Date | null;
   public date_do_update!: boolean;
-  public declaration_issue_date!: Date;
+  public declaration_issue_date!: Date | null;
+  public train_depart_date!: Date | null;
+  public train_arrive_date!: Date | null;
+  public store_arrive_date!: Date | null;
   public declaration_issue_date_update!: boolean;
-  public store_arrive_date!: Date;
   public store_arrive_date_update!: boolean;
-  public train_arrive_date!: Date;
   public train_arrive_date_update!: boolean;
-  public train_depart_date!: Date;
   public train_depart_date_update!: boolean;
   public following_id!: string;
 
@@ -34,8 +34,9 @@ class CalculatedDateModel
 CalculatedDateModel.init(
   {
     id: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.UUID,
       primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
     },
     etd: {
       type: DataTypes.DATE,
@@ -87,9 +88,10 @@ CalculatedDateModel.init(
   },
   {
     timestamps: true,
-    sequelize: sequelize,
+    sequelize,
     paranoid: true,
     modelName: 'calculatedDates',
+    tableName: 'calculated_dates',
     underscored: true,
   }
 );

@@ -1,7 +1,6 @@
 import sequelize from '../db';
 import { DataTypes, Model, Optional } from 'sequelize';
 import { OrderNumberType } from './interfaces';
-import { FollowingModel } from './index';
 
 export interface OrderNumberInput extends Optional<OrderNumberType, 'id'> {}
 export interface OrderNumberOutput extends Required<OrderNumberType> {}
@@ -49,15 +48,5 @@ OrderNumberModel.init(
     underscored: true,
   }
 );
-
-FollowingModel.hasMany(OrderNumberModel, {
-  foreignKey: 'following_id',
-  as: 'order_numbers',
-});
-
-OrderNumberModel.belongsTo(FollowingModel, {
-  foreignKey: 'following_id',
-  as: 'following',
-});
 
 export default OrderNumberModel;

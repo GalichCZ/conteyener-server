@@ -1,14 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { FollowingType } from './interfaces';
 import sequelize from '../db';
-import {
-  StoreModel,
-  StockPlaceModel,
-  DeliveryChannelModel,
-  ContainerTypeModel,
-  DeliveryMethodModel,
-  OrderNumberModel,
-} from './index';
 
 export interface FollowingInput
   extends Optional<
@@ -219,44 +211,10 @@ FollowingModel.init(
     timestamps: true,
     paranoid: true,
     sequelize: sequelize,
+    tableName: 'followings',
     modelName: 'followings',
     underscored: true,
   }
 );
-
-FollowingModel.belongsTo(StoreModel, {
-  foreignKey: 'store_id',
-  as: 'store',
-  onDelete: 'SET NULL',
-});
-
-FollowingModel.belongsTo(StockPlaceModel, {
-  foreignKey: 'stock_place_id',
-  as: 'stockPlace',
-  onDelete: 'SET NULL',
-});
-
-FollowingModel.belongsTo(DeliveryChannelModel, {
-  foreignKey: 'delivery_channel_id',
-  as: 'deliveryChannel',
-  onDelete: 'SET NULL',
-});
-
-FollowingModel.belongsTo(ContainerTypeModel, {
-  foreignKey: 'container_type_id',
-  as: 'containerType',
-  onDelete: 'SET NULL',
-});
-
-FollowingModel.belongsTo(DeliveryMethodModel, {
-  foreignKey: 'delivery_method_id',
-  as: 'deliveryMethod',
-  onDelete: 'SET NULL',
-});
-
-// FollowingModel.hasMany(OrderNumberModel, {
-//   foreignKey: 'following_id',
-//   as: 'order_numbers',
-// });
 
 export default FollowingModel;

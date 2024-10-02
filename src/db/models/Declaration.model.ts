@@ -1,7 +1,6 @@
 import { DeclarationType } from './interfaces';
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../db';
-import { FollowingModel } from './index';
 
 export interface DeclarationInput extends Optional<DeclarationType, 'id'> {}
 export interface DeclarationOutput extends Required<DeclarationType> {}
@@ -45,17 +44,8 @@ DeclarationModel.init(
     tableName: 'declarations',
     underscored: true,
     paranoid: true,
+    timestamps: true,
   }
 );
-
-FollowingModel.hasMany(DeclarationModel, {
-  foreignKey: 'following_id',
-  as: 'declarations',
-});
-
-DeclarationModel.belongsTo(FollowingModel, {
-  foreignKey: 'following_id',
-  as: 'following',
-});
 
 export default DeclarationModel;

@@ -21,7 +21,7 @@ class StoreModel extends Model<StoreType, StoreInput> implements StoreType {
 StoreModel.init(
   {
     id: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },

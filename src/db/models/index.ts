@@ -15,6 +15,8 @@ import DeclarationStatusModel from './DeclarationStatus.model';
 import FollowingProviderModel from './FollowingProvider.model';
 
 export {
+  FollowingModel,
+  OrderNumberModel,
   StoreModel,
   StockPlaceModel,
   ProviderModel,
@@ -23,9 +25,7 @@ export {
   DeliveryMethodModel,
   CalculatedDateModel,
   KmToDistCalculateModel,
-  FollowingModel,
   SimpleProductModel,
-  OrderNumberModel,
   IsDocsModel,
   DeclarationModel,
   DeclarationStatusModel,

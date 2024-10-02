@@ -27,7 +27,7 @@ class DeliveryChannelModel
 DeliveryChannelModel.init(
   {
     id: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
@@ -35,22 +35,22 @@ DeliveryChannelModel.init(
       type: DataTypes.STRING,
     },
     eta: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
     },
     date_do: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
     },
     declaration_issue_date: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
     },
     train_depart_date: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
     },
     train_arrive_date: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
     },
     store_arrive_date: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
     },
   },
   {
