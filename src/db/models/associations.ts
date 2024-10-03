@@ -11,6 +11,7 @@ import {
   DeclarationModel,
   FollowingProviderModel,
   SimpleProductModel,
+  KmToDistCalculateModel,
 } from './index';
 
 console.log({
@@ -49,22 +50,32 @@ export const setUpAssociations = () => {
     as: 'following',
   });
 
+  FollowingModel.hasOne(KmToDistCalculateModel, {
+    foreignKey: 'following_id',
+    as: 'km_to_dist_calculate',
+  });
+
+  KmToDistCalculateModel.belongsTo(FollowingModel, {
+    foreignKey: 'following_id',
+    as: 'following',
+  });
+
+  FollowingModel.hasOne(CalculatedDateModel, {
+    foreignKey: 'following_id',
+    as: 'calculated_dates',
+  });
+
+  CalculatedDateModel.belongsTo(FollowingModel, {
+    foreignKey: 'following_id',
+    as: 'following',
+  });
+
   FollowingModel.hasMany(OrderNumberModel, {
     foreignKey: 'following_id',
     as: 'order_numbers',
   });
 
-  FollowingModel.hasMany(CalculatedDateModel, {
-    foreignKey: 'following_id',
-    as: 'calculated_dates',
-  });
-
   OrderNumberModel.belongsTo(FollowingModel, {
-    foreignKey: 'following_id',
-    as: 'following',
-  });
-
-  CalculatedDateModel.belongsTo(FollowingModel, {
     foreignKey: 'following_id',
     as: 'following',
   });
@@ -89,7 +100,7 @@ export const setUpAssociations = () => {
 
   FollowingModel.belongsTo(DeliveryMethodModel, {
     foreignKey: 'delivery_method_id',
-    as: 'deliveryMethod',
+    as: 'delivery_method' + '',
     onDelete: 'SET NULL',
   });
 

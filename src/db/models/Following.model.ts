@@ -1,6 +1,9 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { FollowingType } from './interfaces';
 import sequelize from '../db';
+import { DeliveryMethodOutput } from './DeliveryMethod.model';
+import { KmToDistCalculateOutput } from './KmToDistCalculate.model';
+import { CalculatedDateOutput } from './CalculatedDate.model';
 
 export interface FollowingInput
   extends Optional<
@@ -25,7 +28,11 @@ export interface FollowingInput
     | 'delivery_channel_id'
     | 'stock_place_id'
   > {}
-export interface FollowingOutput extends Required<FollowingType> {}
+export interface FollowingOutput extends Required<FollowingType> {
+  delivery_method: DeliveryMethodOutput;
+  km_to_dist_calculate: KmToDistCalculateOutput;
+  calculated_dates: CalculatedDateOutput;
+}
 
 class FollowingModel
   extends Model<FollowingType, FollowingInput>

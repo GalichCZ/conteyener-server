@@ -7,6 +7,7 @@ import ContainerTypeRoute from './containerType.route';
 import DeliveryChannelRoute from './deliveryChannel.route';
 import ProviderRoute from './provider.route';
 import CalculateDateRoute from './calculateDate.route';
+import KmToDistRoute from './km-to-dist.route';
 
 const routes = [
   StoreRoute,
@@ -18,6 +19,7 @@ const routes = [
   DeliveryChannelRoute,
   ProviderRoute,
   CalculateDateRoute,
+  KmToDistRoute,
 ];
 
 export default routes;

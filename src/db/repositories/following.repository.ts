@@ -4,11 +4,13 @@ import followingModel, {
   FollowingOutput,
 } from '../models/Following.model';
 import {
+  CalculatedDateModel,
   ContainerTypeModel,
   DeclarationModel,
   DeliveryChannelModel,
   DeliveryMethodModel,
   FollowingModel,
+  KmToDistCalculateModel,
   OrderNumberModel,
   ProviderModel,
   SimpleProductModel,
@@ -61,11 +63,19 @@ class FollowingRepository implements IFollowingRepository {
       include: [
         {
           model: DeliveryMethodModel,
-          as: 'deliveryMethod', // Alias for the DeliveryMethodModel
+          as: 'delivery_method', // Alias for the DeliveryMethodModel
         },
         {
           model: DeliveryChannelModel,
           as: 'deliveryChannel', // Alias for the DeliveryChannelModel
+        },
+        {
+          model: CalculatedDateModel,
+          as: 'calculated_dates',
+        },
+        {
+          model: KmToDistCalculateModel,
+          as: 'km_to_dist_calculate',
         },
       ],
       ...options,
@@ -98,7 +108,7 @@ class FollowingRepository implements IFollowingRepository {
         },
         {
           model: DeliveryMethodModel,
-          as: 'deliveryMethod', // Alias for the DeliveryMethodModel
+          as: 'delivery_method', // Alias for the DeliveryMethodModel
         },
         {
           model: ProviderModel,
@@ -115,6 +125,14 @@ class FollowingRepository implements IFollowingRepository {
         {
           model: SimpleProductModel,
           as: 'simple_products',
+        },
+        {
+          model: CalculatedDateModel,
+          as: 'calculated_dates',
+        },
+        {
+          model: KmToDistCalculateModel,
+          as: 'km_to_dist_calculate',
         },
       ],
     });

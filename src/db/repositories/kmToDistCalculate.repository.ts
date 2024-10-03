@@ -27,6 +27,24 @@ class KmToDistCalculateRepository implements IKmToDistCalculateRepository {
     return record.toJSON() as KmToDistCalculateOutput;
   }
 
+  async updateByFollowingId(
+    followingId: string,
+    input: Partial<KmToDistCalculateInput>,
+    transaction?: Transaction
+  ): Promise<KmToDistCalculateOutput | null> {
+    const options = transaction ? { transaction } : {};
+    const record = await KmToDistCalculateModel.findOne({
+      where: { following_id: followingId },
+      ...options,
+    });
+    if (!record) {
+      return null;
+    }
+
+    await record.update(input);
+    return record.toJSON() as KmToDistCalculateOutput;
+  }
+
   async delete(id: string): Promise<boolean> {
     const deletedCount = await KmToDistCalculateModel.destroy({
       where: { id },
@@ -61,6 +79,10 @@ class KmToDistCalculateRepository implements IKmToDistCalculateRepository {
     });
 
     return deletedCount > 0;
+  }
+
+  async startTransaction() {
+    return await KmToDistCalculateModel.sequelize!.transaction();
   }
 }
 
