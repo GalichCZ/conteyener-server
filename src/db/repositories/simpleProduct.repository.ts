@@ -2,7 +2,6 @@ import { ISimpleProductRepository } from './interfaces';
 import { ProductInput, ProductOutput } from '../models/SimpleProduct.model';
 import { SimpleProductModel } from '../models';
 import { Op, Transaction } from 'sequelize';
-import { getMissingStringsFromInput } from '../../utils/getMissingStringsFromInput';
 import { ProductBody } from '../../services/types/FollowingBody';
 
 class SimpleProductRepository implements ISimpleProductRepository {
@@ -120,6 +119,14 @@ class SimpleProductRepository implements ISimpleProductRepository {
     }
 
     return true;
+  }
+
+  async getAllColumnValues(columnName: string): Promise<any> {
+    const values = await SimpleProductModel.findAll({
+      attributes: [columnName],
+    });
+
+    return values.map((value) => value.get(columnName));
   }
 }
 

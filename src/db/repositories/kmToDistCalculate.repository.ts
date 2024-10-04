@@ -84,6 +84,14 @@ class KmToDistCalculateRepository implements IKmToDistCalculateRepository {
   async startTransaction() {
     return await KmToDistCalculateModel.sequelize!.transaction();
   }
+
+  async getAllColumnValues(columnName: string): Promise<any> {
+    const values = await KmToDistCalculateModel.findAll({
+      attributes: [columnName],
+    });
+
+    return values.map((value) => value.get(columnName));
+  }
 }
 
 export default KmToDistCalculateRepository;

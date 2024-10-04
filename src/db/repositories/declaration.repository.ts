@@ -3,9 +3,9 @@ import {
   DeclarationInput,
   DeclarationOutput,
 } from '../models/Declaration.model';
-import { IDeclarationRepository } from './interfaces/declaration-repository.interface';
+import { IDeclarationRepository } from './interfaces';
 import { Op, Transaction } from 'sequelize';
-import { getMissingStringsFromInput } from '../../utils/getMissingStringsFromInput';
+import { getMissingStringsFromInput } from '../../utils';
 
 class DeclarationRepository implements IDeclarationRepository {
   async deleteMissingDeclarations(
@@ -111,6 +111,14 @@ class DeclarationRepository implements IDeclarationRepository {
     return declarations.map(
       (declaration) => declaration.toJSON() as DeclarationOutput
     );
+  }
+
+  async getAllColumnValues(columnName: string): Promise<any> {
+    const values = await DeclarationModel.findAll({
+      attributes: [columnName],
+    });
+
+    return values.map((value) => value.get(columnName));
   }
 }
 

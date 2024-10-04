@@ -47,6 +47,14 @@ class StoreRepository implements IStoreRepository {
     const stores = await StoreModel.findAll();
     return stores.map((store) => store.toJSON() as StoreOutput);
   }
+
+  async getAllColumnValues(columnName: string): Promise<any> {
+    const values = await StoreModel.findAll({
+      attributes: [columnName],
+    });
+
+    return values.map((value) => value.get(columnName));
+  }
 }
 
 export default StoreRepository;

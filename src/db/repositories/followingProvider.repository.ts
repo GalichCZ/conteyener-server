@@ -5,7 +5,7 @@ import {
 import { FollowingProviderModel } from '../models';
 import { IFollowingProviderRepository } from './interfaces';
 import { Transaction } from 'sequelize';
-import { getMissingStringsFromInput } from '../../utils/getMissingStringsFromInput';
+import { getMissingStringsFromInput } from '../../utils';
 
 class FollowingProviderRepository implements IFollowingProviderRepository {
   async deleteMissingProvidersRelations(
@@ -114,6 +114,10 @@ class FollowingProviderRepository implements IFollowingProviderRepository {
       })),
       options
     );
+  }
+
+  getAllColumnValues(columnName: string): Promise<any> {
+    return Promise.resolve(undefined);
   }
 }
 

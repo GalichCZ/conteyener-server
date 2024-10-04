@@ -79,6 +79,14 @@ class CalculatedDateRepository implements ICalculatedDateRepository {
   async startTransaction() {
     return await CalculatedDateModel.sequelize!.transaction();
   }
+
+  async getAllColumnValues(columnName: string): Promise<any> {
+    const values = await CalculatedDateModel.findAll({
+      attributes: [columnName],
+    });
+
+    return values.map((value) => value.get(columnName));
+  }
 }
 
 export default CalculatedDateRepository;

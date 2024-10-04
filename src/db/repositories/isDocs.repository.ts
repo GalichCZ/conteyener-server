@@ -1,6 +1,6 @@
 import { IsDocsModel } from '../models';
 import { IsDocsInput, IsDocsOutput } from '../models/IsDoc.model';
-import { IIsDocsRepository } from './interfaces/isDocs-repository.interface';
+import { IIsDocsRepository } from './interfaces';
 import { Op, Transaction } from 'sequelize';
 
 class IsDocsRepository implements IIsDocsRepository {
@@ -82,6 +82,10 @@ class IsDocsRepository implements IIsDocsRepository {
       options
     );
     return isDocsList.map((isDocs) => isDocs.toJSON() as IsDocsOutput);
+  }
+
+  getAllColumnValues(columnName: string): Promise<any> {
+    return Promise.resolve(undefined);
   }
 }
 

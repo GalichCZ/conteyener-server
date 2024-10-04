@@ -8,6 +8,11 @@ const _followingController = new FollowingController();
 
 router.get('/following', _followingController.getFollowings);
 
+router.get(
+  '/following/filter-keys/:entity_name/:entity_column',
+  _followingController.getFilterKeys
+);
+
 router.post(
   '/following',
   validateBody(FollowingSchema),

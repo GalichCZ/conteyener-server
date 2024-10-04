@@ -160,6 +160,28 @@ class FollowingRepository implements IFollowingRepository {
   async startTransaction(): Promise<Transaction> {
     return FollowingModel.sequelize!.transaction();
   }
+
+  async getAllColumnValues(columnName: string): Promise<any> {
+    const values = await followingModel.findAll({
+      attributes: [columnName],
+    });
+
+    const mapped = values.map((value) => value.get(columnName));
+
+    const array: any = [];
+    mapped.forEach((m) => {
+      console.log(Array.isArray(m));
+      if (Array.isArray(m)) {
+        array.push(...m);
+      } else {
+        array.push(m);
+      }
+    });
+
+    return array.filter(
+      (value: any, index: number, self: any) => self.indexOf(value) === index
+    );
+  }
 }
 
 export default FollowingRepository;

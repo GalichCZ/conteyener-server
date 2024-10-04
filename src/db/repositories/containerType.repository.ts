@@ -7,6 +7,13 @@ import {
 import { Transaction } from 'sequelize';
 
 class ContainerTypeRepository implements IContainerTypeRepository {
+  async getAllColumnValues(columnName: string): Promise<any> {
+    const values = await ContainerTypeModel.findAll({
+      attributes: [columnName],
+    });
+
+    return values.map((value) => value.get(columnName));
+  }
   async create(
     providerInput: ContainerTypeInput
   ): Promise<ContainerTypeOutput> {

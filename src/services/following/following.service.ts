@@ -15,6 +15,8 @@ import CalculatedDateRepository from '../../db/repositories/calculatedDate.repos
 import StockPlaceRepository from '../../db/repositories/stockPlace.repository';
 import DeliveryChannelRepository from '../../db/repositories/deliveryChannel.repository';
 import ProductSpecificationRepository from '../../db/repositories/productSpecification.repository';
+import ProviderRepository from '../../db/repositories/provider.repository';
+import { IBaseRepository } from '../../db/repositories/interfaces';
 
 class FollowingService {
   constructor(
@@ -32,11 +34,42 @@ class FollowingService {
     protected _kmToDistCalculateRepository = new KmToDistCalculateRepository(),
     protected _calculatedDateRepository = new CalculatedDateRepository(),
     protected _stockPlaceRepository = new StockPlaceRepository(),
-    protected _productSpecificationRepository = new ProductSpecificationRepository()
+    protected _productSpecificationRepository = new ProductSpecificationRepository(),
+    protected _providerRepository = new ProviderRepository(),
+    protected _repositoriesMap: { [key: string]: any } = {
+      stockPlaces: new StockPlaceRepository(),
+      containerTypes: new ContainerTypeRepository(),
+      stores: new StoreRepository(),
+      deliveryMethods: new DeliveryMethodRepository(),
+      deliveryChannels: new DeliveryChannelRepository(),
+      followings: new FollowingRepository(),
+      providers: new ProviderRepository(),
+      kmToDists: new KmToDistCalculateRepository(),
+      orderNumbers: new OrderNumberRepository(),
+      calculatedDates: new CalculatedDateRepository(),
+      declarations: new DeclarationRepository(),
+      simpleProducts: new SimpleProductRepository(),
+      isDocs: new IsDocsRepository(),
+    }
   ) {}
 
   async getFollowings() {
     return await this._followingRepository.findAll();
+  }
+
+  async getFilterKeys(params: any) {
+    try {
+      const { entity_name, entity_column } = params;
+
+      const repository: IBaseRepository<any, any> =
+        this._repositoriesMap[entity_name];
+
+      console.log(this._repositoriesMap, repository);
+
+      return await repository.getAllColumnValues(entity_column);
+    } catch (error) {
+      throw error;
+    }
   }
 
   protected async checkExistingOrderNumbers(

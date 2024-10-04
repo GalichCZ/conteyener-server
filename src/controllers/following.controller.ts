@@ -51,6 +51,19 @@ class FollowingController {
       next(error);
     }
   };
+
+  getFilterKeys = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { entity_name, entity_column } = req.params;
+      const filters = await this._followingService.getFilterKeys({
+        entity_name,
+        entity_column,
+      });
+      res.status(StatusCodes.OK).json(filters);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default FollowingController;

@@ -46,6 +46,10 @@ class ProductSpecificationRepository
   ): Promise<ProductSpecificationOutput | null> {
     return Promise.resolve(null);
   }
+
+  async getAllColumnValues(columnName: string): Promise<any> {
+    return Promise.resolve(undefined);
+  }
 }
 
 export default ProductSpecificationRepository;

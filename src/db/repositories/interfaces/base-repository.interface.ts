@@ -10,4 +10,5 @@ export interface IBaseRepository<I, O> {
   delete(id: string, transaction?: Transaction): Promise<boolean>;
   findById(id: string): Promise<O | null>;
   findAll(): Promise<O[]>;
+  getAllColumnValues(columnName: string): Promise<any>;
 }

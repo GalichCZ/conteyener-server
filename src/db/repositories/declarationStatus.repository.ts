@@ -63,6 +63,10 @@ class DeclarationStatusRepository implements IDeclarationStatusRepository {
 
     return deletedCount > 0;
   }
+
+  getAllColumnValues(columnName: string): Promise<any> {
+    return Promise.resolve(undefined);
+  }
 }
 
 export default DeclarationStatusRepository;

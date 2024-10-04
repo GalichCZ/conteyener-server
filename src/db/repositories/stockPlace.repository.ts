@@ -1,4 +1,4 @@
-import { IStockPlaceRepository } from './interfaces/stockPlace-repository.interface';
+import { IStockPlaceRepository } from './interfaces';
 import { StockPlaceInput, StockPlaceOutput } from '../models/StockPlace.model';
 import { StockPlaceModel } from '../models';
 import { Transaction } from 'sequelize';
@@ -48,6 +48,14 @@ class StockPlaceRepository implements IStockPlaceRepository {
     return stockPlaces.map(
       (stockPlace) => stockPlace.toJSON() as StockPlaceOutput
     );
+  }
+
+  async getAllColumnValues(columnName: string): Promise<any> {
+    const values = await StockPlaceModel.findAll({
+      attributes: [columnName],
+    });
+
+    return values.map((value) => value.get(columnName));
   }
 }
 

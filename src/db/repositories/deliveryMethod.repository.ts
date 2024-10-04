@@ -54,6 +54,14 @@ class DeliveryMethodRepository implements IDeliveryMethodRepository {
       (provider) => provider.toJSON() as DeliveryMethodOutput
     );
   }
+
+  async getAllColumnValues(columnName: string): Promise<any> {
+    const values = await DeliveryMethodModel.findAll({
+      attributes: [columnName],
+    });
+
+    return values.map((value) => value.get(columnName));
+  }
 }
 
 export default DeliveryMethodRepository;

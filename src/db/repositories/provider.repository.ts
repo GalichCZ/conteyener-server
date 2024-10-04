@@ -42,6 +42,14 @@ class ProviderRepository implements IProviderRepository {
     const providers = await ProviderModel.findAll();
     return providers.map((provider) => provider.toJSON() as ProviderOutput);
   }
+
+  async getAllColumnValues(columnName: string): Promise<any> {
+    const values = await ProviderModel.findAll({
+      attributes: [columnName],
+    });
+
+    return values.map((value) => value.get(columnName));
+  }
 }
 
 export default ProviderRepository;

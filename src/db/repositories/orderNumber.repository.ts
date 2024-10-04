@@ -134,6 +134,14 @@ class OrderNumberRepository implements IOrderNumberRepository {
       (orderNumber) => orderNumber.toJSON() as OrderNumberOutput
     );
   }
+
+  async getAllColumnValues(columnName: string): Promise<any> {
+    const values = await OrderNumberModel.findAll({
+      attributes: [columnName],
+    });
+
+    return values.map((value) => value.get(columnName));
+  }
 }
 
 export default OrderNumberRepository;

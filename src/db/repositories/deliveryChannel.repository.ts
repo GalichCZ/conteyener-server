@@ -49,6 +49,14 @@ class DeliveryChannelRepository implements IDeliveryChannelRepository {
       (provider) => provider.toJSON() as DeliveryChannelOutput
     );
   }
+
+  async getAllColumnValues(columnName: string): Promise<any> {
+    const values = await DeliveryChannelModel.findAll({
+      attributes: [columnName],
+    });
+
+    return values.map((value) => value.get(columnName));
+  }
 }
 
 export default DeliveryChannelRepository;
