@@ -1,5 +1,5 @@
 import { IsDocsModel } from '../models';
-import { IsDocsInput, IsDocsOutput } from '../models/IsDoc.model';
+import { IsDocsInput, IsDocsOutput } from '../models/IsDocs.model';
 import { IIsDocsRepository } from './interfaces';
 import { Op, Transaction } from 'sequelize';
 

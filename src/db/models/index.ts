@@ -9,7 +9,7 @@ import KmToDistCalculateModel from './KmToDistCalculate.model';
 import FollowingModel from './Following.model';
 import SimpleProductModel from './SimpleProduct.model';
 import OrderNumberModel from './OrderNumber.model';
-import IsDocsModel from './IsDoc.model';
+import IsDocsModel from './IsDocs.model';
 import DeclarationModel from './Declaration.model';
 import DeclarationStatusModel from './DeclarationStatus.model';
 import FollowingProviderModel from './FollowingProvider.model';

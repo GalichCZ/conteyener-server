@@ -1,5 +1,5 @@
 import { IBaseRepository } from './base-repository.interface';
-import { IsDocsInput, IsDocsOutput } from '../../models/IsDoc.model';
+import { IsDocsInput, IsDocsOutput } from '../../models/IsDocs.model';
 import { Transaction } from 'sequelize';
 
 export interface IIsDocsRepository

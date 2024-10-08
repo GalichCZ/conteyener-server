@@ -6,6 +6,7 @@ import {
 import { IOrderNumberRepository } from './interfaces';
 import { Op, Transaction } from 'sequelize';
 import { OrderNumber } from '../../services/types/FollowingBody';
+import { removeDuplicates } from '../../utils/remove-duplicates';
 
 class OrderNumberRepository implements IOrderNumberRepository {
   async create(input: OrderNumberInput): Promise<OrderNumberOutput> {
@@ -136,11 +137,14 @@ class OrderNumberRepository implements IOrderNumberRepository {
   }
 
   async getAllColumnValues(columnName: string): Promise<any> {
+    console.log({ columnName });
     const values = await OrderNumberModel.findAll({
       attributes: [columnName],
     });
 
-    return values.map((value) => value.get(columnName));
+    const array = values.map((value) => value.get(columnName));
+
+    return removeDuplicates(array);
   }
 }
 

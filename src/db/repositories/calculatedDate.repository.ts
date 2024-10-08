@@ -5,6 +5,7 @@ import {
   CalculatedDateOutput,
 } from '../models/CalculatedDate.model';
 import { Transaction } from 'sequelize';
+import { removeDuplicates } from '../../utils/remove-duplicates';
 
 class CalculatedDateRepository implements ICalculatedDateRepository {
   async deleteByFollowingId(
@@ -85,7 +86,11 @@ class CalculatedDateRepository implements ICalculatedDateRepository {
       attributes: [columnName],
     });
 
-    return values.map((value) => value.get(columnName));
+    const array = values.map((value) => value.get(columnName));
+
+    if (!array.length) return [];
+
+    return removeDuplicates(array);
   }
 }
 

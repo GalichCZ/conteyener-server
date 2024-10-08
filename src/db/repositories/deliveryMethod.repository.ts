@@ -5,6 +5,7 @@ import {
 } from '../models/DeliveryMethod.model';
 import { DeliveryMethodModel } from '../models';
 import { Transaction } from 'sequelize';
+import { removeDuplicates } from '../../utils/remove-duplicates';
 
 class DeliveryMethodRepository implements IDeliveryMethodRepository {
   async create(
@@ -57,10 +58,12 @@ class DeliveryMethodRepository implements IDeliveryMethodRepository {
 
   async getAllColumnValues(columnName: string): Promise<any> {
     const values = await DeliveryMethodModel.findAll({
-      attributes: [columnName],
+      attributes: ['method'],
     });
 
-    return values.map((value) => value.get(columnName));
+    const array = values.map((value) => value.get('method'));
+
+    return removeDuplicates(array);
   }
 }
 

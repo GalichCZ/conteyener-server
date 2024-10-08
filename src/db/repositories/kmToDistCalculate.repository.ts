@@ -5,6 +5,7 @@ import {
 } from '../models/KmToDistCalculate.model';
 import { KmToDistCalculateModel } from '../models';
 import { Transaction } from 'sequelize';
+import { removeDuplicates } from '../../utils/remove-duplicates';
 
 class KmToDistCalculateRepository implements IKmToDistCalculateRepository {
   async create(
@@ -90,7 +91,9 @@ class KmToDistCalculateRepository implements IKmToDistCalculateRepository {
       attributes: [columnName],
     });
 
-    return values.map((value) => value.get(columnName));
+    const array = values.map((value) => value.get(columnName));
+
+    return removeDuplicates(array);
   }
 }
 

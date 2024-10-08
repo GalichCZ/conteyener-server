@@ -12,6 +12,7 @@ export interface FollowingType extends TimeStampsType {
   agent: string;
   place_of_dispatch: string;
   line: string | null;
+  is_ds: boolean;
   ready_date: Date | null;
   load_date: Date | null;
   release: Date | null;

@@ -5,6 +5,7 @@ import {
   ContainerTypeOutput,
 } from '../models/ContainerType.model';
 import { Transaction } from 'sequelize';
+import { removeDuplicates } from '../../utils/remove-duplicates';
 
 class ContainerTypeRepository implements IContainerTypeRepository {
   async getAllColumnValues(columnName: string): Promise<any> {
@@ -12,7 +13,9 @@ class ContainerTypeRepository implements IContainerTypeRepository {
       attributes: [columnName],
     });
 
-    return values.map((value) => value.get(columnName));
+    const array = values.map((value) => value.get(columnName));
+
+    return removeDuplicates(array);
   }
   async create(
     providerInput: ContainerTypeInput

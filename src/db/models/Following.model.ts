@@ -45,6 +45,7 @@ class FollowingModel
   public conditions!: string[];
   public container_number!: string | null;
   public destination_station!: string | null;
+  public is_ds!: boolean;
   public direction!: string;
   public expeditor!: string | null;
   public fraht!: string | null;
@@ -129,6 +130,10 @@ FollowingModel.init(
       allowNull: true,
     },
     bl_smgs_cmr: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    is_ds: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },

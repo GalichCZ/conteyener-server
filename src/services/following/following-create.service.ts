@@ -74,6 +74,7 @@ class FollowingCreateService extends FollowingService {
         delivery_method_id: deliveryMethod.id,
         container_type_id: containerType.id,
         place_of_dispatch,
+        is_ds: false,
         hidden: false,
       };
 

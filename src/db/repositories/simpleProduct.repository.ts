@@ -3,6 +3,7 @@ import { ProductInput, ProductOutput } from '../models/SimpleProduct.model';
 import { SimpleProductModel } from '../models';
 import { Op, Transaction } from 'sequelize';
 import { ProductBody } from '../../services/types/FollowingBody';
+import { removeDuplicates } from '../../utils/remove-duplicates';
 
 class SimpleProductRepository implements ISimpleProductRepository {
   async deleteMissingProducts(
@@ -126,7 +127,9 @@ class SimpleProductRepository implements ISimpleProductRepository {
       attributes: [columnName],
     });
 
-    return values.map((value) => value.get(columnName));
+    const array = values.map((value) => value.get(columnName));
+
+    return removeDuplicates(array);
   }
 }
 

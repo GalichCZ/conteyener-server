@@ -82,31 +82,31 @@ export const setUpAssociations = () => {
 
   FollowingModel.belongsTo(StockPlaceModel, {
     foreignKey: 'stock_place_id',
-    as: 'stockPlace',
+    as: 'stock_places',
     onDelete: 'SET NULL',
   });
 
   FollowingModel.belongsTo(DeliveryChannelModel, {
     foreignKey: 'delivery_channel_id',
-    as: 'deliveryChannel',
+    as: 'delivery_channels',
     onDelete: 'SET NULL',
   });
 
   FollowingModel.belongsTo(ContainerTypeModel, {
     foreignKey: 'container_type_id',
-    as: 'containerType',
+    as: 'container_types',
     onDelete: 'SET NULL',
   });
 
   FollowingModel.belongsTo(DeliveryMethodModel, {
     foreignKey: 'delivery_method_id',
-    as: 'delivery_method' + '',
+    as: 'delivery_methods',
     onDelete: 'SET NULL',
   });
 
   FollowingModel.belongsTo(StoreModel, {
     foreignKey: 'store_id',
-    as: 'store',
+    as: 'stores',
     onDelete: 'SET NULL',
   });
 

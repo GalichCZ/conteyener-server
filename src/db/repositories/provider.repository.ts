@@ -1,6 +1,7 @@
 import { IProviderRepository } from './interfaces';
 import { ProviderInput, ProviderOutput } from '../models/Provider.model';
 import { ProviderModel } from '../models';
+import { removeDuplicates } from '../../utils/remove-duplicates';
 
 class ProviderRepository implements IProviderRepository {
   async create(providerInput: ProviderInput): Promise<ProviderOutput> {
@@ -48,7 +49,9 @@ class ProviderRepository implements IProviderRepository {
       attributes: [columnName],
     });
 
-    return values.map((value) => value.get(columnName));
+    const array = values.map((value) => value.get(columnName));
+
+    return removeDuplicates(array);
   }
 }
 

@@ -2,6 +2,7 @@ import { IStoreRepository } from './interfaces';
 import { StoreInput, StoreOutput } from '../models/Store.model';
 import { StoreModel } from '../models';
 import { Transaction } from 'sequelize';
+import { removeDuplicates } from '../../utils/remove-duplicates';
 
 class StoreRepository implements IStoreRepository {
   async create(storeInput: StoreInput): Promise<StoreOutput> {
@@ -50,10 +51,12 @@ class StoreRepository implements IStoreRepository {
 
   async getAllColumnValues(columnName: string): Promise<any> {
     const values = await StoreModel.findAll({
-      attributes: [columnName],
+      attributes: ['name'],
     });
 
-    return values.map((value) => value.get(columnName));
+    const array = values.map((value) => value.get('name'));
+
+    return removeDuplicates(array);
   }
 }
 

@@ -2,6 +2,7 @@ import { IStockPlaceRepository } from './interfaces';
 import { StockPlaceInput, StockPlaceOutput } from '../models/StockPlace.model';
 import { StockPlaceModel } from '../models';
 import { Transaction } from 'sequelize';
+import { removeDuplicates } from '../../utils/remove-duplicates';
 
 class StockPlaceRepository implements IStockPlaceRepository {
   async create(stockPlaceInput: StockPlaceInput): Promise<StockPlaceOutput> {
@@ -52,10 +53,12 @@ class StockPlaceRepository implements IStockPlaceRepository {
 
   async getAllColumnValues(columnName: string): Promise<any> {
     const values = await StockPlaceModel.findAll({
-      attributes: [columnName],
+      attributes: ['name'],
     });
 
-    return values.map((value) => value.get(columnName));
+    const array = values.map((value) => value.get('name'));
+
+    return removeDuplicates(array);
   }
 }
 

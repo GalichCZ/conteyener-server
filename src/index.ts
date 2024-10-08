@@ -5,6 +5,7 @@ import routes from './routes';
 import bodyParser from 'body-parser';
 import { errorHandler } from './error-handler/error-handler';
 import { setUpAssociations } from './db/models/associations';
+import cors from 'cors';
 import dbInit from './db/models/dbInit';
 
 dotenv.config();
@@ -15,6 +16,7 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(bodyParser.json());
 app.use(express.json());
+app.use(cors());
 
 // Test database connection and start server
 const startServer = async () => {

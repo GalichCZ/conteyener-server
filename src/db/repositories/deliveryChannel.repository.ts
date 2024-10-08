@@ -4,6 +4,7 @@ import {
   DeliveryChannelOutput,
 } from '../models/DeliveryChannel.model';
 import { DeliveryChannelModel } from '../models';
+import { removeDuplicates } from '../../utils/remove-duplicates';
 
 class DeliveryChannelRepository implements IDeliveryChannelRepository {
   async create(
@@ -55,7 +56,9 @@ class DeliveryChannelRepository implements IDeliveryChannelRepository {
       attributes: [columnName],
     });
 
-    return values.map((value) => value.get(columnName));
+    const array = values.map((value) => value.get(columnName));
+
+    return removeDuplicates(array);
   }
 }
 

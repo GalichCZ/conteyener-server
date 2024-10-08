@@ -37,19 +37,19 @@ class FollowingService {
     protected _productSpecificationRepository = new ProductSpecificationRepository(),
     protected _providerRepository = new ProviderRepository(),
     protected _repositoriesMap: { [key: string]: any } = {
-      stockPlaces: new StockPlaceRepository(),
-      containerTypes: new ContainerTypeRepository(),
+      stock_places: new StockPlaceRepository(),
+      container_types: new ContainerTypeRepository(),
       stores: new StoreRepository(),
-      deliveryMethods: new DeliveryMethodRepository(),
-      deliveryChannels: new DeliveryChannelRepository(),
+      delivery_methods: new DeliveryMethodRepository(),
+      delivery_channels: new DeliveryChannelRepository(),
       followings: new FollowingRepository(),
       providers: new ProviderRepository(),
-      kmToDists: new KmToDistCalculateRepository(),
-      orderNumbers: new OrderNumberRepository(),
-      calculatedDates: new CalculatedDateRepository(),
+      km_to_dist_calculates: new KmToDistCalculateRepository(),
+      order_numbers: new OrderNumberRepository(),
+      calculated_dates: new CalculatedDateRepository(),
       declarations: new DeclarationRepository(),
-      simpleProducts: new SimpleProductRepository(),
-      isDocs: new IsDocsRepository(),
+      simple_products: new SimpleProductRepository(),
+      is_docs: new IsDocsRepository(),
     }
   ) {}
 
@@ -63,8 +63,6 @@ class FollowingService {
 
       const repository: IBaseRepository<any, any> =
         this._repositoriesMap[entity_name];
-
-      console.log(this._repositoriesMap, repository);
 
       return await repository.getAllColumnValues(entity_column);
     } catch (error) {
