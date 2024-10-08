@@ -45,7 +45,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
 
-routes.forEach((route) => app.use('/api', route));
+routes.forEach((route) => app.use('/api/test', route));
 
 // Error handler
 app.use(errorHandler);
