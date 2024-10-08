@@ -13,6 +13,8 @@ router.get(
   _followingController.getFilterKeys
 );
 
+router.post('/following/filter', _followingController.filterFollowings);
+
 router.post(
   '/following',
   validateBody(FollowingSchema),

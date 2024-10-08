@@ -6,9 +6,10 @@ export const removeDuplicates = (array: any) => {
 
   if (isDate) {
     const noNullDates = array.filter((date: any) => date !== null);
-    return Array.from(
+    const isoDateStrings: string[] = Array.from(
       new Set(noNullDates.map((date: Date) => date.toISOString()))
     );
+    return isoDateStrings.map((iD) => new Date(iD));
   }
 
   return array.filter(

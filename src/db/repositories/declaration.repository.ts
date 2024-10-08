@@ -6,6 +6,7 @@ import {
 import { IDeclarationRepository } from './interfaces';
 import { Op, Transaction } from 'sequelize';
 import { getMissingStringsFromInput } from '../../utils';
+import { removeDuplicates } from '../../utils/remove-duplicates';
 
 class DeclarationRepository implements IDeclarationRepository {
   async deleteMissingDeclarations(
@@ -118,7 +119,9 @@ class DeclarationRepository implements IDeclarationRepository {
       attributes: [columnName],
     });
 
-    return values.map((value) => value.get(columnName));
+    const array = values.map((value) => value.get(columnName));
+
+    return removeDuplicates(array);
   }
 }
 

@@ -4,12 +4,14 @@ import FollowingService from '../services/following/following.service';
 import FollowingUpdateService from '../services/following/following-update.service';
 import FollowingCreateService from '../services/following/following-create.service';
 import FollowingDeleteService from '../services/following/following-delete.service';
+import FollowingsFilterService from '../services/following/followings-filter.service';
 
 class FollowingController {
   private _followingService = new FollowingService();
   private _followingUpdateService = new FollowingUpdateService();
   private _followingCreateService = new FollowingCreateService();
   private _followingDeleteService = new FollowingDeleteService();
+  private _followingFilterService = new FollowingsFilterService();
 
   createFollowing = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -59,7 +61,23 @@ class FollowingController {
         entity_name,
         entity_column,
       });
+      console.log(filters);
       res.status(StatusCodes.OK).json(filters);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  filterFollowings = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const followings = await this._followingFilterService.filterFollowings(
+        req.body
+      );
+      res.status(StatusCodes.OK).json(followings);
     } catch (error) {
       next(error);
     }
