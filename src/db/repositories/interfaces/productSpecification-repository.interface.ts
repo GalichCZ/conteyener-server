@@ -3,7 +3,7 @@ import {
   ProductSpecificationInput,
   ProductSpecificationOutput,
 } from '../../models/ProductSpecification.model';
-import { Promise, Transaction } from 'sequelize';
+import { Transaction } from 'sequelize';
 
 export interface IProductSpecificationRepository
   extends IBaseRepository<

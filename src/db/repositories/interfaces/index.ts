@@ -14,8 +14,3 @@ export * from './declaration-repository.interface';
 export * from './declarationStatus-repository.interface';
 export * from './simpleProdcut-repository.interface';
 export * from './followingProvider-repository.interface';
-export * from './followingDeliveryChannel-repository.interface';
-export * from './followingStockPlace-repository.interface';
-export * from './followingContainerType-repository.interface';
-export * from './followingDeliveryMethod-repository.interface';
-export * from './followingStore-repository.interface';
