@@ -12,6 +12,7 @@ import {
   FollowingProviderModel,
   SimpleProductModel,
   KmToDistCalculateModel,
+  IsDocsModel,
 } from './index';
 
 console.log({
@@ -78,6 +79,16 @@ export const setUpAssociations = () => {
   OrderNumberModel.belongsTo(FollowingModel, {
     foreignKey: 'following_id',
     as: 'following',
+  });
+
+  OrderNumberModel.hasOne(IsDocsModel, {
+    foreignKey: 'order_id',
+    as: 'is_docs',
+  });
+
+  IsDocsModel.belongsTo(OrderNumberModel, {
+    foreignKey: 'order_id',
+    as: 'order_number',
   });
 
   FollowingModel.belongsTo(StockPlaceModel, {

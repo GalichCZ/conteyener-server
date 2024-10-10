@@ -8,6 +8,7 @@ type Filter = {
   column: string;
   value: any;
   is_array?: boolean;
+  belongs_to?: string;
 };
 
 export type FilterBody = {

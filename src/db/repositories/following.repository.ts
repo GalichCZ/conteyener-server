@@ -10,6 +10,7 @@ import {
   DeliveryChannelModel,
   DeliveryMethodModel,
   FollowingModel,
+  IsDocsModel,
   KmToDistCalculateModel,
   OrderNumberModel,
   ProviderModel,
@@ -131,6 +132,17 @@ class FollowingRepository implements IFollowingRepository {
         {
           model: OrderNumberModel, // Include OrderNumberModel
           as: 'order_numbers', // Alias used in the hasMany relationship
+          include: [
+            {
+              model: IsDocsModel,
+              as: 'is_docs',
+              // where: {
+              //   [Op.and]: [{ pi: true, ci: true, pl: true }],
+              // },
+              // required: true,
+            },
+          ],
+          // required: true,
         },
         {
           model: DeclarationModel,
@@ -237,6 +249,14 @@ class FollowingRepository implements IFollowingRepository {
       {
         model: OrderNumberModel,
         as: 'order_numbers',
+        include: [
+          {
+            model: IsDocsModel,
+            as: 'is_docs',
+            required: true,
+          },
+        ],
+        required: true,
       },
       {
         model: SimpleProductModel,
@@ -246,18 +266,36 @@ class FollowingRepository implements IFollowingRepository {
         model: ProviderModel,
         as: 'providers', // Alias for the ProviderModel
       },
-      // {
-      //   model: IsDocsModel,
-      //   as: 'is_docs',
-      // },
       // Add any other necessary models here
     ];
     const where: any = {};
 
     filters.forEach((filter) => {
-      const { scope, column, value, is_foreign, is_array } = filter;
+      const { scope, column, value, is_foreign, is_array, belongs_to } = filter;
 
       console.log({ scope, column, value, is_foreign, is_array });
+
+      if (belongs_to) {
+        const parentModel = include.find((inc: any) => inc.as === belongs_to);
+        const relatedModel = parentModel.include.find(
+          (inc: any) => inc.as === scope
+        );
+
+        if (relatedModel && parentModel) {
+          if (is_array) {
+          } else {
+            //check if it has where
+            const where = relatedModel.where;
+            if (where) {
+              where[Op.and].push({ [value.toLowerCase()]: true });
+            } else {
+              relatedModel.where = {
+                [Op.and]: [{ [value.toLowerCase()]: true }],
+              };
+            }
+          }
+        }
+      }
 
       if (scope === 'following' && !is_foreign) {
         if (is_array) {
@@ -316,7 +354,7 @@ class FollowingRepository implements IFollowingRepository {
         }
       }
 
-      if (scope !== 'following') {
+      if (scope !== 'following' && !belongs_to) {
         const relatedModel = include.find((inc: any) => inc.as === scope);
         if (relatedModel) {
           if (is_array) {
