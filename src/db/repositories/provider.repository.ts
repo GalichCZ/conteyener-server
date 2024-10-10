@@ -46,10 +46,10 @@ class ProviderRepository implements IProviderRepository {
 
   async getAllColumnValues(columnName: string): Promise<any> {
     const values = await ProviderModel.findAll({
-      attributes: [columnName],
+      attributes: ['name'],
     });
 
-    const array = values.map((value) => value.get(columnName));
+    const array = values.map((value) => value.get('name'));
 
     return removeDuplicates(array);
   }
