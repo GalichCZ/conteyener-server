@@ -136,13 +136,8 @@ class FollowingRepository implements IFollowingRepository {
             {
               model: IsDocsModel,
               as: 'is_docs',
-              // where: {
-              //   [Op.and]: [{ pi: true, ci: true, pl: true }],
-              // },
-              // required: true,
             },
           ],
-          // required: true,
         },
         {
           model: DeclarationModel,
@@ -265,6 +260,15 @@ class FollowingRepository implements IFollowingRepository {
       {
         model: ProviderModel,
         as: 'providers', // Alias for the ProviderModel
+        where: search
+          ? {
+              name: {
+                [Op.or]: {
+                  [Op.iLike]: `%${search}%`, // Case-insensitive search for provider name
+                },
+              },
+            }
+          : {},
       },
       // Add any other necessary models here
     ];
@@ -272,8 +276,6 @@ class FollowingRepository implements IFollowingRepository {
 
     filters.forEach((filter) => {
       const { scope, column, value, is_foreign, is_array, belongs_to } = filter;
-
-      console.log({ scope, column, value, is_foreign, is_array });
 
       if (belongs_to) {
         const parentModel = include.find((inc: any) => inc.as === belongs_to);
@@ -373,8 +375,6 @@ class FollowingRepository implements IFollowingRepository {
             }
           }
         }
-
-        return;
       }
     });
 
@@ -397,23 +397,22 @@ class FollowingRepository implements IFollowingRepository {
         { fraht: { [Op.iLike]: `%${search}%` } },
 
         // Search through related models via foreign keys (joined models)
-        { '$store.name$': { [Op.iLike]: `%${search}%` } },
-        { '$stockPlace.name$': { [Op.iLike]: `%${search}%` } },
-        { '$containerType.type_name$': { [Op.iLike]: `%${search}%` } },
-        { '$deliveryMethod.method$': { [Op.iLike]: `%${search}%` } },
-        { '$deliveryChannel.name$': { [Op.iLike]: `%${search}%` } },
+        { '$stores.name$': { [Op.iLike]: `%${search}%` } },
+        { '$stock_places.name$': { [Op.iLike]: `%${search}%` } },
+        { '$container_types.type_name$': { [Op.iLike]: `%${search}%` } },
+        { '$delivery_methods.method$': { [Op.iLike]: `%${search}%` } },
 
         // Search in tables with following_id as a foreign key
-        { '$orderNumbers.number$': { [Op.iLike]: `%${search}%` } },
+        { '$order_numbers.number$': { [Op.iLike]: `%${search}%` } },
         { '$declarations.number$': { [Op.iLike]: `%${search}%` } },
-        { '$kmToDistCalculates.km_to_dist$': { [Op.iLike]: `%${search}%` } },
-        { '$simpleProducts.simple_name$': { [Op.iLike]: `%${search}%` } },
+        Number(search)
+          ? { '$km_to_dist_calculate.km_to_dist$': { [Op.eq]: Number(search) } }
+          : {},
+        { '$simple_products.simple_name$': { [Op.iLike]: `%${search}%` } },
 
         // Add any other relevant related tables here
       ];
     }
-
-    console.log(where, 379);
 
     const followings = await FollowingModel.findAll({
       where,

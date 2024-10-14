@@ -122,14 +122,16 @@ export const setUpAssociations = () => {
   });
 
   FollowingModel.belongsToMany(ProviderModel, {
-    through: FollowingProviderModel, // Name of the junction table
-    foreignKey: 'following_id', // Foreign key in the junction table for Followings
-    otherKey: 'provider_id', // Foreign key in the junction table for Providers
+    through: FollowingProviderModel,
+    foreignKey: 'following_id',
+    otherKey: 'provider_id',
+    as: 'providers', // Alias for providers
   });
 
   ProviderModel.belongsToMany(FollowingModel, {
     through: FollowingProviderModel,
     foreignKey: 'provider_id',
     otherKey: 'following_id',
+    as: 'followings', // Alias for followings
   });
 };
