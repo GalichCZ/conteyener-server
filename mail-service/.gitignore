@@ -1,0 +1,6 @@
+../.idea
+conteyener-server.iml
+.env
+dist/**
+node_modules
+coverage/**
