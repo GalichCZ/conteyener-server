@@ -13,6 +13,7 @@ import { DocsNotification } from '../types/docs-notification';
 import { DateNotification } from '../types/date-update-notification';
 import { OutDateNotification } from '../types/out-date-notification';
 import { outDateNotificationMail } from '../emails/out-date-notification.mail';
+import { docMail } from '../emails/doc-mail';
 dotenv.config();
 class MailService {
   private transporter: Transporter;
@@ -102,6 +103,29 @@ class MailService {
       to: emails.join(','),
       subject: 'Опоздание в датах на CONTEYENER',
       html: outDateNotificationMail(container_number, out_dates),
+    };
+    await this.sendMail(mailOptions);
+  }
+
+  async notifyDs(data: any) {
+    const { emails, order_number } = data;
+    console.log(data);
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: emails.join(','),
+      subject: `Уведомления ДС ${order_number}`,
+      html: docMail(order_number, 'Д/С для подачи'),
+    };
+    await this.sendMail(mailOptions);
+  }
+
+  async notifyBl(data: any) {
+    const { emails, order_number } = data;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: emails.join(','),
+      subject: `Уведомления BL/СМГС/CMR ${order_number}`,
+      html: docMail(order_number, 'BL/СМГС/CMR'),
     };
     await this.sendMail(mailOptions);
   }

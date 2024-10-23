@@ -58,6 +58,26 @@ class MailController {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
     }
   };
+
+  notifyDs = async (req: Request, res: Response) => {
+    try {
+      await this._mailService.notifyDs(req.body);
+      res.status(StatusCodes.OK).send();
+    } catch (error) {
+      console.log(error);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+    }
+  };
+
+  notifyBl = async (req: Request, res: Response) => {
+    try {
+      await this._mailService.notifyBl(req.body);
+      res.status(StatusCodes.OK).send();
+    } catch (error) {
+      console.log(error);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+    }
+  };
 }
 
 export default MailController;
