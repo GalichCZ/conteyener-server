@@ -16,31 +16,40 @@ export const dateUpdateNotificationMail = (data: DateUpdateNotification) => {
     declaration_issue_date_update,
     store_arrive_date_update,
     container_number,
-    km_to_dist,
+    km_to_dist: { km_to_dist },
   } = data;
 
   return `
-               <div>
-                 <h3>Номер контейнера ${container_number}</h3>
-                 <h3>Км. до станции назначения ${km_to_dist}</h3>
-                 <table style="border-collapse: collapse; width: 100%;">
-                   <tr>
-                      <td style="border: 1px solid black; padding: 8px;">ETA</td>
-                      <td style="border: 1px solid black; padding: 8px;">Дата ДО</td>
-                      <td style="border: 1px solid black; padding: 8px;">Дата выпуска декларации</td>
-                      <td style="border: 1px solid black; padding: 8px;">Дата отправки по ЖД</td>
-                      <td style="border: 1px solid black; padding: 8px;">Дата прибытия по ЖД</td>
-                      <td style="border: 1px solid black; padding: 8px;">Дата прибытия на склад</td>
-                   </tr>
-                   <tr>
-                      <td style="border: 1px solid black; padding: 8px;">${formatDate(eta)} ${eta_update ? 'Фактическая' : 'Расчетная'}</td>
-                      <td style="border: 1px solid black; padding: 8px;">${formatDate(date_do)} ${date_do_update ? 'Фактическая' : 'Расчетная'}</td>
-                      <td style="border: 1px solid black; padding: 8px;">${formatDate(declaration_issue_date)} ${declaration_issue_date_update ? 'Фактическая' : 'Расчетная'}</td>
-                      <td style="border: 1px solid black; padding: 8px;">${formatDate(train_depart_date)} ${train_depart_date_update ? 'Фактическая' : 'Расчетная'}</td>
-                      <td style="border: 1px solid black; padding: 8px;">${formatDate(train_arrive_date)} ${train_arrive_date_update ? 'Фактическая' : 'Расчетная'}</td>
-                      <td style="border: 1px solid black; padding: 8px;">${formatDate(store_arrive_date)} ${store_arrive_date_update ? 'Фактическая' : 'Расчетная'}</td>
-                   </tr>
-                 </table>
-               </div>
-            `;
+      <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9;">
+        <div style="max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+          <div style="background-color: #fb511e; color: #ffffff; padding: 20px;">
+            <h1 style="margin: 0;">Обновление данных по контейнеру ${container_number}</h1>
+          </div>
+          <div style="padding: 30px;">
+            <p style="font-size: 16px; color: #333333;">Км. до станции назначения: ${km_to_dist}</p>
+            <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
+              <tr style="background-color: #f2f2f2;">
+                <th style="border: 1px solid #ddd; padding: 10px; font-size: 14px;">ETA</th>
+                <th style="border: 1px solid #ddd; padding: 10px; font-size: 14px;">Дата ДО</th>
+                <th style="border: 1px solid #ddd; padding: 10px; font-size: 14px;">Дата выпуска декларации</th>
+                <th style="border: 1px solid #ddd; padding: 10px; font-size: 14px;">Дата отправки по ЖД</th>
+                <th style="border: 1px solid #ddd; padding: 10px; font-size: 14px;">Дата прибытия по ЖД</th>
+                <th style="border: 1px solid #ddd; padding: 10px; font-size: 14px;">Дата прибытия на склад</th>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 10px; color: #333333;">${formatDate(eta)} ${eta_update ? 'Фактическая' : 'Расчетная'}</td>
+                <td style="border: 1px solid #ddd; padding: 10px; color: #333333;">${formatDate(date_do)} ${date_do_update ? 'Фактическая' : 'Расчетная'}</td>
+                <td style="border: 1px solid #ddd; padding: 10px; color: #333333;">${formatDate(declaration_issue_date)} ${declaration_issue_date_update ? 'Фактическая' : 'Расчетная'}</td>
+                <td style="border: 1px solid #ddd; padding: 10px; color: #333333;">${formatDate(train_depart_date)} ${train_depart_date_update ? 'Фактическая' : 'Расчетная'}</td>
+                <td style="border: 1px solid #ddd; padding: 10px; color: #333333;">${formatDate(train_arrive_date)} ${train_arrive_date_update ? 'Фактическая' : 'Расчетная'}</td>
+                <td style="border: 1px solid #ddd; padding: 10px; color: #333333;">${formatDate(store_arrive_date)} ${store_arrive_date_update ? 'Фактическая' : 'Расчетная'}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div style="margin-top: 20px; font-size: 12px; color: #999999;">
+          © 2024 Patriot. Все права защищены.
+        </div>
+      </div>
+    `;
 };

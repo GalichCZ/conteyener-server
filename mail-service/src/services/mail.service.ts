@@ -85,7 +85,6 @@ class MailService {
 
   async dateNotification(data: DateNotification) {
     const { emails, notification } = data;
-
     const mailOptions: nodemailer.SendMailOptions = {
       from: process.env.EMAIL_USER,
       to: emails.join(','),
@@ -96,13 +95,13 @@ class MailService {
   }
 
   async outDateNotification(data: OutDateNotification) {
-    const { emails, out_dates, container_number } = data;
+    const { emails, rotten_data } = data;
 
     const mailOptions: nodemailer.SendMailOptions = {
       from: process.env.EMAIL_USER,
       to: emails.join(','),
       subject: 'Опоздание в датах на CONTEYENER',
-      html: outDateNotificationMail(container_number, out_dates),
+      html: outDateNotificationMail(rotten_data),
     };
     await this.sendMail(mailOptions);
   }

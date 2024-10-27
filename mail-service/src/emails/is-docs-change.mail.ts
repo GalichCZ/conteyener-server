@@ -16,6 +16,7 @@ const DOC_NAMES: Record<string, string> = {
   contract_agrees: 'Контракт и действующие доп. соглашения',
   cost_agrees: 'Стоимостные доп. соглашения',
   instruction: 'Инструкция',
+  common_comment: 'Общий комментарий',
   ed: 'ED',
   co: 'CO',
   bill: 'Счет',
@@ -32,26 +33,35 @@ export const isDocsChangeMail = (data: IsDocsNotification) => {
         change_type === 'comment_changed' || change_type === 'comment_added';
       const formattedDate = formatDateWithTime(date);
       return `
-        <li style="margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-          <strong>${changeText}</strong> <br/>
+        <li style="margin-bottom: 10px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #ffffff;">
+          <strong style="color: #fb511e;">${changeText}</strong> <br/>
           <span style="color: #555;">${doc}</span> <br/>
           <span style="font-size: 0.9em; color: #999;">${formattedDate}</span> <br/>
-          <span style="color: #333;">${isComment ? 'Комментарий: ' + comment_value : ''}</span>
+          ${isComment ? `<span style="color: #333;">Комментарий: ${comment_value}</span>` : ''}
         </li>`;
     }
   );
 
   const changesListHtml = `
-      <ul style="list-style-type: none; padding: 0;">
+      <ul style="list-style-type: none; padding: 0; margin: 0;">
         ${changesArrayHtml.join('')}
       </ul>
     `;
 
   return `
-      <div style="font-family: Arial, sans-serif; color: #333;">
-        <h3 style="color: #0066cc;">Заказ ${order_number}</h3>
-        <br/>
-        ${changesListHtml} 
+      <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9;">
+        <div style="max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+          <div style="background-color: #fb511e; color: #ffffff; padding: 20px;">
+            <h1 style="margin: 0;">Обновления по заказу ${order_number}</h1>
+          </div>
+          <div style="padding: 30px;">
+            <p style="font-size: 16px; color: #333333;">Детали обновлений:</p>
+            ${changesListHtml}
+          </div>
+        </div>
+        <div style="margin-top: 20px; font-size: 12px; color: #999999;">
+            © 2024 Patriot. Все права защищены.
+        </div>
       </div>
     `;
 };

@@ -5,7 +5,11 @@ export type OutDate = {
   date: string;
 };
 
-export type OutDateNotification = {
+export type RottenData = Array<{
   out_dates: OutDate[];
   container_number: string;
+}>;
+
+export type OutDateNotification = {
+  rotten_data: RottenData;
 } & CrowdEmail;

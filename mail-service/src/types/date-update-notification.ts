@@ -14,7 +14,7 @@ export interface DateUpdateNotification {
   train_depart_date_update: boolean;
   train_arrive_date_update: boolean;
   store_arrive_date_update: boolean;
-  km_to_dist: number;
+  km_to_dist: { dist_was_updated: boolean; km_to_dist: number };
 }
 
 export type DateNotification = {

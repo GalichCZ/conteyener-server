@@ -37,6 +37,7 @@ class MailController {
       await this._mailService.docsNotification(req.body);
       res.status(StatusCodes.OK).send();
     } catch (error) {
+      console.log(error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
     }
   };
@@ -55,6 +56,7 @@ class MailController {
       await this._mailService.outDateNotification(req.body);
       res.status(StatusCodes.OK).send();
     } catch (error) {
+      console.log(error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
     }
   };
