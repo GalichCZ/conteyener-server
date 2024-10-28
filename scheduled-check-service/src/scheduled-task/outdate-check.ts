@@ -7,6 +7,7 @@ import { isDateOlderThanToday } from "../utils/is-date-older-than-today";
 import { DateType } from "../enum/date-type";
 import { Following } from "../types/following";
 import cron from "node-cron";
+import { testMail } from "../api/test-mail";
 
 dotenv.config();
 
@@ -81,6 +82,16 @@ cron.schedule(
   () => {
     console.log('scheduled task "checkOutdate" has been executed');
     checkOutdate();
+  },
+  { timezone: "Europe/Moscow" },
+);
+
+cron.schedule(
+  "* * * * *", // every minute
+  // "0 8,20 * * *", // every day at 8:00 and 20:00
+  () => {
+    console.log('scheduled task "testMail" has been executed');
+    testMail();
   },
   { timezone: "Europe/Moscow" },
 );
