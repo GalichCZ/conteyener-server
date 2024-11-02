@@ -10,6 +10,7 @@ import GError from '../../error-handler/GError';
 import { getMissingStringsFromInput } from '../../utils';
 import { getEntity } from '../../utils';
 import FollowingService from './following.service';
+import { onSave } from './elastic-crud/on-save';
 
 class FollowingUpdateService extends FollowingService {
   constructor() {
@@ -33,8 +34,9 @@ class FollowingUpdateService extends FollowingService {
         ...(input as FollowingType),
       };
 
+      let deliveryMethod = null;
       if (input.delivery_method) {
-        const deliveryMethod = await getEntity<DeliveryMethodOutput>(
+        deliveryMethod = await getEntity<DeliveryMethodOutput>(
           input.delivery_method,
           'Delivery method',
           this._deliveryMethodRepository,
@@ -45,8 +47,9 @@ class FollowingUpdateService extends FollowingService {
         updateObject.delivery_method_id = deliveryMethod.id;
       }
 
+      let store = null;
       if (input.store) {
-        const store = await getEntity<StoreOutput>(
+        store = await getEntity<StoreOutput>(
           input.store,
           'Store',
           this._storeRepository,
@@ -57,8 +60,9 @@ class FollowingUpdateService extends FollowingService {
         updateObject.store_id = store.id;
       }
 
+      let containerType = null;
       if (input.container_type) {
-        const containerType = await getEntity<ContainerTypeOutput>(
+        containerType = await getEntity<ContainerTypeOutput>(
           input.container_type,
           'Container type',
           this._containerTypeRepository,
@@ -70,8 +74,9 @@ class FollowingUpdateService extends FollowingService {
         updateObject.container_type_id = containerType.id;
       }
 
+      let stockPlace = null;
       if (input.stock_place) {
-        const stockPlace = await getEntity<StockPlaceOutput>(
+        stockPlace = await getEntity<StockPlaceOutput>(
           input.stock_place,
           'Stock place',
           this._stockPlaceRepository,
@@ -82,8 +87,9 @@ class FollowingUpdateService extends FollowingService {
         updateObject.stock_place_id = stockPlace.id;
       }
 
+      let deliveryChannel = null;
       if (input.delivery_channel) {
-        const deliveryChannel = await getEntity<DeliveryChannelOutput>(
+        deliveryChannel = await getEntity<DeliveryChannelOutput>(
           input.delivery_channel,
           'Delivery channel',
           this._deliveryChannelRepository,
@@ -111,6 +117,7 @@ class FollowingUpdateService extends FollowingService {
         }
       }
 
+      let orderNumbers = null;
       if (input.order_numbers) {
         //REMARK! I need to compare ids of numbers, not numbers themselves
         const inputNumbersWithId = input.order_numbers.filter(
@@ -158,12 +165,16 @@ class FollowingUpdateService extends FollowingService {
         );
 
         //update order numbers with id
-        await this._orderNumberRepository.updateManyByOrderNumberIds(
-          inputNumbersWithId,
-          transaction
-        );
+        const updatedOrderNumbers =
+          await this._orderNumberRepository.updateManyByOrderNumberIds(
+            inputNumbersWithId,
+            transaction
+          );
+
+        orderNumbers = [...createdOrderNumbers, ...updatedOrderNumbers];
       }
 
+      let simpleProducts = null;
       if (input.products) {
         //split products into simple_product and product_specifications done
         // each simple product may have multiple specification records
@@ -180,11 +191,12 @@ class FollowingUpdateService extends FollowingService {
           .filter((p) => !p.id)
           .map((p) => p.name);
         //create new products(without ids)
-        await this._simpleProductRepository.createSimpleProducts(
-          productsWithoutIds,
-          id,
-          transaction
-        );
+        const createdProducts =
+          await this._simpleProductRepository.createSimpleProducts(
+            productsWithoutIds,
+            id,
+            transaction
+          );
 
         //delete missing products
         //  delete specifications for missing products
@@ -205,12 +217,16 @@ class FollowingUpdateService extends FollowingService {
         );
 
         //update existing products(with ids)
-        await this._simpleProductRepository.updateManyByProductIds(
-          productsWithId,
-          transaction
-        );
+        const updatedProducts =
+          await this._simpleProductRepository.updateManyByProductIds(
+            productsWithId,
+            transaction
+          );
+
+        simpleProducts = [...createdProducts, ...updatedProducts];
       }
 
+      const declarationNumbers = [];
       if (input.declaration_number) {
         //some bugs with deleting declarations
         const declarationIds = input.declaration_number
@@ -225,12 +241,14 @@ class FollowingUpdateService extends FollowingService {
         const newDeclarationNumbers = input.declaration_number.filter(
           (d) => !d.id
         );
+
         if (newDeclarationNumbers.length) {
           for (const declaration of newDeclarationNumbers) {
-            await this._declarationRepository.create(
+            const newDeclaration = await this._declarationRepository.create(
               { number: declaration.number, following_id: following.id },
               transaction
             );
+            declarationNumbers.push(newDeclaration);
           }
         }
         const declarationNumbersToUpdate = input.declaration_number.filter(
@@ -238,9 +256,13 @@ class FollowingUpdateService extends FollowingService {
         );
         if (declarationNumbersToUpdate.length) {
           for (const declarationToUpdate of declarationNumbersToUpdate) {
-            await this._declarationRepository.update(declarationToUpdate.id!, {
-              number: declarationToUpdate.number,
-            });
+            const updatedDeclaration = await this._declarationRepository.update(
+              declarationToUpdate.id!,
+              {
+                number: declarationToUpdate.number,
+              }
+            );
+            declarationNumbers.push(updatedDeclaration);
           }
         }
       }
@@ -260,11 +282,22 @@ class FollowingUpdateService extends FollowingService {
         );
       }
 
-      await this._followingRepository.update(
+      const updatedFollowing = await this._followingRepository.update(
         following.id,
         updateObject as Partial<FollowingType>
       );
-      // await this._followingRepository.update(following.id, input, transaction);
+
+      await onSave({
+        following: updatedFollowing,
+        order_numbers: orderNumbers,
+        transaction,
+        deliveryMethod,
+        store,
+        containerType,
+        stockPlace,
+        simpleProducts,
+        declarationNumberModels: declarationNumbers,
+      });
       await transaction.commit();
     } catch (error) {
       if (transactionStarted) {

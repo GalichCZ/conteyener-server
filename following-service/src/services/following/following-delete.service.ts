@@ -1,6 +1,7 @@
 import FollowingService from './following.service';
 import { FollowingOutput } from '../../db/models/Following.model';
 import { getEntity } from '../../utils';
+import { onDelete } from './elastic-crud/on-delete';
 
 class FollowingDeleteService extends FollowingService {
   constructor() {
@@ -57,6 +58,8 @@ class FollowingDeleteService extends FollowingService {
       await this._declarationRepository.deleteByFollowingId(id, transaction);
 
       await this._followingRepository.delete(id, transaction);
+
+      await onDelete(id);
 
       await transaction.commit();
     } catch (error) {

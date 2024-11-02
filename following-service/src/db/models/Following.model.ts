@@ -29,7 +29,7 @@ export interface FollowingInput
     | 'stock_place_id'
   > {}
 export interface FollowingOutput extends Required<FollowingType> {
-  delivery_method: DeliveryMethodOutput;
+  delivery_methods: DeliveryMethodOutput;
   km_to_dist_calculate: KmToDistCalculateOutput;
   calculated_dates: CalculatedDateOutput;
 }

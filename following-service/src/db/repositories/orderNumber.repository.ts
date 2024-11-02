@@ -52,19 +52,26 @@ class OrderNumberRepository implements IOrderNumberRepository {
   async updateManyByOrderNumberIds(
     order_numbers_input: OrderNumber[],
     transaction?: Transaction
-  ): Promise<boolean> {
+  ): Promise<OrderNumberOutput[]> {
     const inputOrderNumbersWithIds = order_numbers_input.filter((n) => n.id);
 
+    const updatedOrderNumbers = [];
     for (const inputOrderNumbersWithId of inputOrderNumbersWithIds) {
       const orderNumber = await this.findById(inputOrderNumbersWithId.id);
       if (!orderNumber) {
-        return false;
+        return [];
       }
 
-      await this.update(orderNumber.id, inputOrderNumbersWithId, transaction);
+      const updatedOrderNumber = await this.update(
+        orderNumber.id,
+        inputOrderNumbersWithId,
+        transaction
+      );
+
+      updatedOrderNumbers.push(updatedOrderNumber);
     }
 
-    return true;
+    return updatedOrderNumbers;
   }
 
   async deleteMissingOrderNumbers(

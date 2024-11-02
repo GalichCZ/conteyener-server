@@ -5,6 +5,7 @@ import CalculatedDateRepository from '../db/repositories/calculatedDate.reposito
 import GError from '../error-handler/GError';
 import { DeliveryMethods } from './enums/delivery-methods';
 import dayjs from 'dayjs';
+import { onSave } from './following/elastic-crud/on-save';
 
 class KmToDistService {
   private _kmToDistRepository = new KmToDistCalculateRepository();
@@ -29,21 +30,27 @@ class KmToDistService {
       }
 
       if (!following.km_to_dist_calculate) {
-        await this._kmToDistRepository.create({
+        const kmToDist = await this._kmToDistRepository.create({
           following_id: following.id,
           km_to_dist: body.km,
           km_was_updated: true,
         });
+
+        await onSave({ following, transaction, kmToDist });
       }
 
       const isSeaMethod =
-        following.delivery_method.method === DeliveryMethods.sea;
+        following.delivery_methods.method === DeliveryMethods.sea;
 
       if (!isSeaMethod) {
-        await this._kmToDistRepository.updateByFollowingId(following.id, {
-          km_to_dist: body.km,
-          km_was_updated: true,
-        });
+        const kmToDist = await this._kmToDistRepository.updateByFollowingId(
+          following.id,
+          {
+            km_to_dist: body.km,
+            km_was_updated: true,
+          }
+        );
+        await onSave({ following, transaction, kmToDist });
         await transaction.commit();
         return;
       }
@@ -61,16 +68,20 @@ class KmToDistService {
           : this.addDayToDate(new Date(today), daysToAdd);
       };
 
-      await this._kmToDistRepository.updateByFollowingId(following.id, {
-        km_to_dist: body.km,
-        km_was_updated: true,
-      });
+      const kmToDist = await this._kmToDistRepository.updateByFollowingId(
+        following.id,
+        {
+          km_to_dist: body.km,
+          km_was_updated: true,
+        }
+      );
       await this._calculateDateRepository.update(
         following.calculated_dates.id,
         {
           train_arrive_date: newDate(),
         }
       );
+      await onSave({ following, transaction, kmToDist });
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();

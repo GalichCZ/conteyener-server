@@ -1,6 +1,5 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import { RottenData } from "../types/rotten-data";
 
 dotenv.config();
 

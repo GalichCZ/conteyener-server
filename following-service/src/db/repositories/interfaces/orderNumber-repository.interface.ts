@@ -21,5 +21,5 @@ export interface IOrderNumberRepository
   updateManyByOrderNumberIds(
     order_numbers_input: OrderNumber[],
     transaction?: Transaction
-  ): Promise<boolean>;
+  ): Promise<OrderNumberOutput[]>;
 }

@@ -5,6 +5,7 @@ import { StoreOutput } from '../../db/models/Store.model';
 import { ContainerTypeOutput } from '../../db/models/ContainerType.model';
 import { FollowingInput } from '../../db/models/Following.model';
 import { getEntity } from '../../utils';
+import { onSave } from './elastic-crud/on-save';
 
 class FollowingCreateService extends FollowingService {
   constructor() {
@@ -29,7 +30,7 @@ class FollowingCreateService extends FollowingService {
         providers,
       } = followingBody;
 
-      const order_number = order_numbers!.map((o) => o.number);
+      const order_number = order_numbers!.map((o) => o.trim());
 
       await this.checkExistingOrderNumbers(
         order_number,
@@ -99,6 +100,8 @@ class FollowingCreateService extends FollowingService {
         following.id,
         transaction
       );
+
+      await onSave({ following, order_numbers: orderNumbers, transaction });
 
       await transaction.commit();
     } catch (error) {

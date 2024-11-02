@@ -101,9 +101,11 @@ class SimpleProductRepository implements ISimpleProductRepository {
   async updateManyByProductIds(
     products_input: ProductBody[],
     transaction?: Transaction
-  ): Promise<boolean> {
+  ): Promise<ProductOutput[]> {
     const options = transaction ? { transaction } : {};
     const inputProductsWithIds = products_input.filter(({ id }) => id);
+
+    const updatedProducts = [];
 
     for (const inputProductsWithId of inputProductsWithIds) {
       const product = await SimpleProductModel.findByPk(
@@ -113,13 +115,17 @@ class SimpleProductRepository implements ISimpleProductRepository {
         }
       );
       if (!product) {
-        return false;
+        return [];
       }
 
-      await this.update(product.id, { simple_name: inputProductsWithId.name });
+      const simpleProduct = await this.update(product.id, {
+        simple_name: inputProductsWithId.name,
+      });
+
+      updatedProducts.push(simpleProduct);
     }
 
-    return true;
+    return updatedProducts;
   }
 
   async getAllColumnValues(columnName: string): Promise<any> {

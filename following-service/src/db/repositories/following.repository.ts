@@ -70,11 +70,11 @@ class FollowingRepository implements IFollowingRepository {
       include: [
         {
           model: DeliveryMethodModel,
-          as: 'delivery_method', // Alias for the DeliveryMethodModel
+          as: 'delivery_methods', // Alias for the DeliveryMethodModel
         },
         {
           model: DeliveryChannelModel,
-          as: 'deliveryChannel', // Alias for the DeliveryChannelModel
+          as: 'delivery_channels', // Alias for the DeliveryChannelModel
         },
         {
           model: CalculatedDateModel,
@@ -95,20 +95,12 @@ class FollowingRepository implements IFollowingRepository {
   }
 
   async findAll(): Promise<FollowingOutput[]> {
-    const a = {
-      model: StoreModel,
-      as: 'stores', // Alias for the StoreModel
-      where: { [Op.or]: [{ name: { [Op.iLike]: '%a%' } }] },
-      // required: false,
-    };
-    console.log(a);
     const followings = await FollowingModel.findAll({
       include: [
         {
           model: DeliveryChannelModel,
           as: 'delivery_channels', // Alias for the DeliveryChannelModel
         },
-        // a,
         {
           model: StoreModel,
           as: 'stores', // Alias for the StoreModel

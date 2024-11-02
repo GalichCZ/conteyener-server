@@ -17,7 +17,7 @@ export interface ISimpleProductRepository
   updateManyByProductIds(
     products_input: ProductBody[],
     transaction?: Transaction
-  ): Promise<boolean>;
+  ): Promise<ProductOutput[]>;
   createSimpleProducts(
     simpleProducts: string[],
     following_id: string,

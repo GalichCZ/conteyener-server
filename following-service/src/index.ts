@@ -6,6 +6,8 @@ import bodyParser from 'body-parser';
 import { errorHandler } from './error-handler/error-handler';
 import { setUpAssociations } from './db/models/associations';
 import cors from 'cors';
+import './provider/elastic/indexes-init';
+import { addFollowingIndexes } from './provider/elastic/migration/add-following-indexes';
 import dbInit from './db/models/dbInit';
 
 dotenv.config();
@@ -21,6 +23,9 @@ app.use(cors());
 // Test database connection and start server
 const startServer = async () => {
   try {
+    if (process.env.ADD_FOLLOWING_INDEXES === 'true') {
+      addFollowingIndexes();
+    }
     setUpAssociations(); // Set up associations before syncing
 
     // Initialize the database and synchronize models
