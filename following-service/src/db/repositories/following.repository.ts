@@ -26,6 +26,8 @@ import {
   WhereConditionsScopes,
 } from '../../types/where-conditions';
 import { removeDuplicates } from '../../utils/remove-duplicates';
+import { onGet } from '../../services/following/elastic-crud/on-get';
+import { followingFilterHandler } from './utils/following-filter-handler';
 
 class FollowingRepository implements IFollowingRepository {
   async create(
@@ -204,6 +206,14 @@ class FollowingRepository implements IFollowingRepository {
   ): Promise<FollowingOutput[] | null> {
     const { filters, search } = filtersBody;
 
+    /*
+      {filters: [
+        key: string,
+        value: any,
+        is_elastic: boolean
+      ]}
+     */
+
     const include: any = [
       {
         model: StoreModel,
@@ -252,158 +262,32 @@ class FollowingRepository implements IFollowingRepository {
       {
         model: ProviderModel,
         as: 'providers', // Alias for the ProviderModel
-        where: search
-          ? {
-              name: {
-                [Op.or]: {
-                  [Op.iLike]: `%${search}%`, // Case-insensitive search for provider name
-                },
-              },
-            }
-          : {},
       },
       // Add any other necessary models here
     ];
-    const where: any = {};
+    const where: any = {
+      hidden: false,
+    };
 
-    filters.forEach((filter) => {
-      const { scope, column, value, is_foreign, is_array, belongs_to } = filter;
+    if (search === '' && !filters.length) {
+      const result = await FollowingModel.findAll({
+        where,
+        include,
+      });
 
-      if (belongs_to) {
-        const parentModel = include.find((inc: any) => inc.as === belongs_to);
-        const relatedModel = parentModel.include.find(
-          (inc: any) => inc.as === scope
-        );
+      return result.map((following) => following.toJSON() as FollowingOutput);
+    }
 
-        if (relatedModel && parentModel) {
-          if (is_array) {
-          } else {
-            //check if it has where
-            const where = relatedModel.where;
-            if (where) {
-              where[Op.and].push({ [value.toLowerCase()]: true });
-            } else {
-              relatedModel.where = {
-                [Op.and]: [{ [value.toLowerCase()]: true }],
-              };
-            }
-          }
-        }
-      }
+    const result = await onGet(search, filters);
 
-      if (scope === 'following' && !is_foreign) {
-        if (is_array) {
-          if (where[column]) {
-            where[column][Op.or].push({ [Op.overlap]: [value] });
-          } else {
-            where[column] = { [Op.or]: [{ [Op.overlap]: [value] }] };
-          }
-        } else {
-          if (where[column]) {
-            where[column][Op.or].push(value);
-          } else {
-            where[column] = { [Op.or]: [value] };
-          }
-        }
-      }
+    const noElasticFilters = filters.filter((f) => !f.is_elastic);
 
-      if (scope === 'following' && is_foreign) {
-        const includeModel = include.find((inc: any) => inc.as === column);
+    if (noElasticFilters.length > 0) {
+      followingFilterHandler(noElasticFilters, where, include);
+    }
 
-        const specificColumns: { [key: string]: string } = {
-          stores: 'name',
-          stock_places: 'name',
-          container_types: 'type_name',
-          delivery_methods: 'method',
-        };
-
-        if (includeModel) {
-          if (is_array) {
-            if (
-              includeModel.where &&
-              includeModel.where[specificColumns[column]]
-            ) {
-              includeModel.where[specificColumns[column]][Op.or].push({
-                [Op.overlap]: [value],
-              });
-            } else {
-              includeModel.where = {
-                [specificColumns[column]]: {
-                  [Op.or]: [{ [Op.overlap]: [value] }],
-                },
-              };
-            }
-          } else {
-            if (
-              includeModel.where &&
-              includeModel.where[specificColumns[column]]
-            ) {
-              includeModel.where[specificColumns[column]][Op.or].push(value);
-            } else {
-              includeModel.where = {
-                [specificColumns[column]]: { [Op.or]: [value] },
-              };
-            }
-          }
-        }
-      }
-
-      if (scope !== 'following' && !belongs_to) {
-        const relatedModel = include.find((inc: any) => inc.as === scope);
-        if (relatedModel) {
-          if (is_array) {
-            if (relatedModel.where && relatedModel.where[column]) {
-              relatedModel.where[column][Op.or].push({ [Op.overlap]: [value] });
-            } else {
-              relatedModel.where = {
-                [column]: { [Op.or]: [{ [Op.overlap]: [value] }] },
-              };
-            }
-          } else {
-            if (relatedModel.where && relatedModel.where[column]) {
-              relatedModel.where[column][Op.or].push(value);
-            } else {
-              relatedModel.where = { [column]: { [Op.or]: [value] } };
-            }
-          }
-        }
-      }
-    });
-
-    if (search) {
-      where[Op.or as any] = [
-        // Search directly on the following table
-        { inside_number: { [Op.overlap]: [search] } },
-        { proform_number: { [Op.overlap]: [search] } },
-        { container_number: { [Op.iLike]: `%${search}%` } },
-        { importers: { [Op.overlap]: [search] } },
-        { conditions: { [Op.overlap]: [search] } },
-        { direction: { [Op.iLike]: `%${search}%` } },
-        { agent: { [Op.iLike]: `%${search}%` } },
-        { place_of_dispatch: { [Op.iLike]: `%${search}%` } },
-        { line: { [Op.iLike]: `%${search}%` } },
-        { port: { [Op.iLike]: `%${search}%` } },
-        { expeditor: { [Op.iLike]: `%${search}%` } },
-        { destination_station: { [Op.iLike]: `%${search}%` } },
-        { pickup: { [Op.iLike]: `%${search}%` } },
-        { fraht: { [Op.iLike]: `%${search}%` } },
-
-        // Search through related models via foreign keys (joined models)
-        { '$stores.name$': { [Op.iLike]: `%${search}%` } },
-        { '$stock_places.name$': { [Op.iLike]: `%${search}%` } },
-        { '$container_types.type_name$': { [Op.iLike]: `%${search}%` } },
-        { '$delivery_methods.method$': { [Op.iLike]: `%${search}%` } },
-
-        // Search in tables with following_id as a foreign key
-        { '$order_numbers.number$': { [Op.iLike]: `%${search}%` } },
-        { '$declarations.number$': { [Op.iLike]: `%${search}%` } },
-        Number(search)
-          ? { '$km_to_dist_calculate.km_to_dist$': { [Op.eq]: Number(search) } }
-          : {},
-        { '$simple_products.simple_name$': { [Op.iLike]: `%${search}%` } },
-
-        // Add any other relevant related tables here
-      ];
+    if (result.length > 0) {
+      where['id'] = { [Op.in]: result };
     }
 
     const followings = await FollowingModel.findAll({

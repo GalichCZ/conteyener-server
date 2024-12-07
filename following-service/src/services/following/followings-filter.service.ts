@@ -9,6 +9,17 @@ class FollowingsFilterService extends FollowingService {
     super();
   }
 
+  /*
+   * filter all possible poles through the elastic search
+   * if there is a pole that is not in elastic index => add filter to sql query
+   * all elastic search results will be paginated
+   * if with extra pole there is no any results => get second page of elastic
+   * repeat it till the end of pages
+   * max page size returning to the client is 50
+   * while mapping results from elastic with extra pole case =>
+   *  add results to answer array until it's 50
+   */
+
   //TODO: make body type
   async filterFollowings(filtersBody: any) {
     const transaction = await this._followingRepository.startTransaction();

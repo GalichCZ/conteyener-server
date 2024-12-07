@@ -108,16 +108,18 @@ export const addFollowingIndexes = async () => {
           expeditor: following.expeditor,
           destination_station: following.destination_station,
           pickup: following.pickup,
-          fraht: following.fraht,
-          store_name: following.stores?.name,
+          fraht_account: following.fraht,
+          store: following.stores?.name,
           stock_place: following.stock_places?.name,
           container_type: following.container_types?.type_name,
           delivery_method: following.delivery_methods?.method,
           declaration_number: following.declarations?.map((d) => d.number),
           km_to_dist: following.km_to_dist_calculate?.km_to_dist,
-          simple_product: following.simple_products?.map((s) => s.simple_name),
+          simple_product_name: following.simple_products?.map(
+            (s) => s.simple_name
+          ),
           order_number: following.order_numbers?.map((o) => o.number),
-          provider: following.providers?.map((p) => p.name),
+          providers: following.providers?.map((p) => p.name),
         },
       });
     }
