@@ -5,14 +5,14 @@ import { StatusCodes } from 'http-status-codes';
 class MailController {
   private _mailService = new MailService();
 
-  testEmail = async (req: Request, res: Response) => {
-    try {
-      await this._mailService.testEmail();
-      res.status(StatusCodes.OK).send();
-    } catch (error) {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
-    }
-  };
+  // testEmail = async (req: Request, res: Response) => {
+  //   try {
+  //     await this._mailService.testEmail();
+  //     res.status(StatusCodes.OK).send();
+  //   } catch (error) {
+  //     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+  //   }
+  // };
 
   activationEmail = async (req: Request, res: Response) => {
     try {
@@ -34,6 +34,7 @@ class MailController {
 
   docsNotification = async (req: Request, res: Response) => {
     try {
+      console.log(req.body);
       await this._mailService.docsNotification(req.body);
       res.status(StatusCodes.OK).send();
     } catch (error) {
