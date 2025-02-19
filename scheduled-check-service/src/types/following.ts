@@ -17,4 +17,16 @@ export interface Following {
   train_arrive_date_update: boolean;
   store_arrive_date: string;
   store_arrive_date_update: boolean;
+  deliveryChannel: DeliveryChannel;
+}
+
+export interface DeliveryChannel {
+  _id: string;
+  name: string;
+  eta: number;
+  date_do: number;
+  declaration_issue_date: number;
+  train_depart_date: number;
+  train_arrive_date: number;
+  store_arrive_date: number;
 }
