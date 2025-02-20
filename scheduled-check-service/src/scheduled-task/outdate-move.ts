@@ -18,6 +18,7 @@ const dbName = process.env.MONGO_DB_NAME;
 const followingCollectionName = "items";
 
 export const outdateMove = async () => {
+  console.log("ha");
   const client = new MongoClient(url);
   try {
     await client.connect();
@@ -58,6 +59,12 @@ export const outdateMove = async () => {
       let shouldUpdate = false;
       let updatedFields: Partial<Record<keyof Following, string | null>> = {};
 
+      let dayToAddTo = dayjs()
+        .tz("Europe/Moscow")
+        .hour(11)
+        .minute(0)
+        .second(0)
+        .millisecond(0);
       for (let i = 0; i < datesToCheck.length; i++) {
         const dateField = datesToCheck[i] as keyof Following;
         const updateField = `${datesToCheck[i]}_update` as keyof Following;
@@ -70,7 +77,10 @@ export const outdateMove = async () => {
         if (isOlderThanToday) shouldUpdate = true;
 
         if (shouldUpdate) {
-          if (!following[updateField] && dateField !== "store_arrive_date") {
+          if (
+            !following[updateField]
+            // && dateField !== "store_arrive_date"
+          ) {
             const oldDate = following[datesToCheck[i + 1]];
             if (oldDate) {
               const deliveryDays =
@@ -79,22 +89,10 @@ export const outdateMove = async () => {
                 updatedFields[datesToCheck[i + 1]] = null;
                 continue;
               }
-              const newDate = dayjs()
-                .tz("Europe/Moscow")
-                .add(deliveryDays, "day")
-                .hour(11)
-                .minute(0)
-                .second(0)
-                .millisecond(0);
+              const newDate = dayToAddTo.add(deliveryDays, "day");
               updatedFields[datesToCheck[i + 1]] = newDate.toISOString();
+              dayToAddTo = newDate;
             }
-          }
-          if (!following[updateField] && dateField === "store_arrive_date") {
-            updatedFields[dateField] = dayjs(
-              new Date(following.store_arrive_date),
-            )
-              .add(1, "day")
-              .toISOString();
           }
         }
       }
@@ -102,7 +100,7 @@ export const outdateMove = async () => {
       if (Object.keys(updatedFields).length > 0) {
         await followingCollection.updateOne(
           { _id: following._id },
-          //@ts-ignore
+          // @ts-ignore
           { $set: updatedFields },
         );
       }
@@ -115,7 +113,7 @@ export const outdateMove = async () => {
 };
 
 cron.schedule(
-  "0 5 * * *", // Every day at 5:00 AM
+  "0 1 * * *", // Every day at 1:00 AM
   () => {
     console.log('scheduled task "checkOutdate" has been executed');
     outdateMove();
