@@ -65,34 +65,33 @@ export const outdateMove = async () => {
         .minute(0)
         .second(0)
         .millisecond(0);
-      for (let i = 0; i < datesToCheck.length; i++) {
-        const dateField = datesToCheck[i] as keyof Following;
-        const updateField = `${datesToCheck[i]}_update` as keyof Following;
+      const notNullDatesToCheck = datesToCheck.filter(
+        (date) => following[date] !== null,
+      );
+      for (let i = 0; i < notNullDatesToCheck.length; i++) {
+        const dateField = notNullDatesToCheck[i] as keyof Following;
+        const updateField =
+          `${notNullDatesToCheck[i]}_update` as keyof Following;
 
         const isOlderThanToday = isDateOlderThanToday(
           following[dateField],
           today,
         );
 
-        if (isOlderThanToday) shouldUpdate = true;
+        shouldUpdate = isOlderThanToday && !following[updateField];
 
         if (shouldUpdate) {
-          if (
-            !following[updateField]
-            // && dateField !== "store_arrive_date"
-          ) {
-            const oldDate = following[datesToCheck[i + 1]];
-            if (oldDate) {
-              const deliveryDays =
-                following.deliveryChannel?.[datesToCheck[i + 1]] ?? null;
-              if (deliveryDays === 0) {
-                updatedFields[datesToCheck[i + 1]] = null;
-                continue;
-              }
-              const newDate = dayToAddTo.add(deliveryDays, "day");
-              updatedFields[datesToCheck[i + 1]] = newDate.toISOString();
-              dayToAddTo = newDate;
+          const oldDate = following[notNullDatesToCheck[i + 1]];
+          if (oldDate) {
+            const deliveryDays =
+              following.deliveryChannel?.[notNullDatesToCheck[i + 1]] ?? null;
+            if (deliveryDays === 0) {
+              updatedFields[notNullDatesToCheck[i + 1]] = null;
+              continue;
             }
+            const newDate = dayToAddTo.add(deliveryDays, "day");
+            updatedFields[notNullDatesToCheck[i + 1]] = newDate.toISOString();
+            dayToAddTo = newDate;
           }
         }
       }
