@@ -16,7 +16,7 @@ export const dateUpdateNotificationMail = (data: DateUpdateNotification) => {
     declaration_issue_date_update,
     store_arrive_date_update,
     container_number,
-    km_to_dist: { km_to_dist },
+    km_to_dist,
     products,
   } = data;
 
