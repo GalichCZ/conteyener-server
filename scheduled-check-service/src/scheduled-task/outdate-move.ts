@@ -52,46 +52,45 @@ export const outdateMove = async () => {
     const filteredFollowings = followings.filter(
       (following) => following.deliveryChannel,
     );
-    const today = new Date();
+    const today = dayjs().tz("Europe/Moscow").startOf("day");
     const datesToCheck = Object.values(DateType);
 
     for (const following of filteredFollowings) {
-      let shouldUpdate = false;
       let updatedFields: Partial<Record<keyof Following, string | null>> = {};
 
-      let dayToAddTo = dayjs()
-        .tz("Europe/Moscow")
-        .hour(11)
-        .minute(0)
-        .second(0)
-        .millisecond(0);
-      const notNullDatesToCheck = datesToCheck.filter(
-        (date) => following[date] !== null,
-      );
-      for (let i = 0; i < notNullDatesToCheck.length; i++) {
-        const dateField = notNullDatesToCheck[i] as keyof Following;
-        const updateField =
-          `${notNullDatesToCheck[i]}_update` as keyof Following;
+      // Find the first outdated and not updated date
+      let startingDateIndex = -1;
+      for (let i = 0; i < datesToCheck.length; i++) {
+        const dateField = datesToCheck[i] as keyof Following;
+        const updateField = `${datesToCheck[i]}_update` as keyof Following;
 
-        const isOlderThanToday = isDateOlderThanToday(
-          following[dateField],
-          today,
-        );
+        if (following[dateField] && !following[updateField]) {
+          const isOlderThanToday = isDateOlderThanToday(
+            following[dateField],
+            today.toDate(),
+          );
 
-        shouldUpdate = isOlderThanToday && !following[updateField];
+          if (isOlderThanToday) {
+            startingDateIndex = i;
+            break;
+          }
+        }
+      }
 
-        if (shouldUpdate) {
-          const oldDate = following[notNullDatesToCheck[i + 1]];
-          if (oldDate) {
-            const deliveryDays =
-              following.deliveryChannel?.[notNullDatesToCheck[i + 1]] ?? null;
-            if (deliveryDays === 0) {
-              updatedFields[notNullDatesToCheck[i + 1]] = null;
-              continue;
-            }
-            const newDate = dayToAddTo.add(deliveryDays, "day");
-            updatedFields[notNullDatesToCheck[i + 1]] = newDate.toISOString();
-            dayToAddTo = newDate;
+      // If we found an outdated date, update all subsequent dates
+      if (startingDateIndex !== -1) {
+        let currentDate = today.hour(11).minute(0).second(0).millisecond(0);
+
+        // Start updating from the next date after the outdated one
+        for (let i = startingDateIndex + 1; i < datesToCheck.length; i++) {
+          const dateField = datesToCheck[i] as keyof Following;
+          const deliveryDays = following.deliveryChannel?.[dateField] ?? null;
+
+          if (deliveryDays === 0) {
+            updatedFields[dateField] = null;
+          } else if (deliveryDays !== null) {
+            currentDate = currentDate.add(deliveryDays, "day");
+            updatedFields[dateField] = currentDate.toISOString();
           }
         }
       }
@@ -99,8 +98,7 @@ export const outdateMove = async () => {
       if (Object.keys(updatedFields).length > 0) {
         await followingCollection.updateOne(
           { _id: following._id },
-          // @ts-ignore
-          { $set: updatedFields },
+          { $set: updatedFields as any },
         );
       }
     }
