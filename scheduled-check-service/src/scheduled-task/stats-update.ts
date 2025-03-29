@@ -91,8 +91,7 @@ export const getContainerStats = async (): Promise<ContainerStatsWithIds> => {
         store_arrive_date_update: false,
         declaration_issue_date_update: true,
         hidden: false,
-        "km_to_dist.km_to_dist": "0",
-        "km_to_dist.dist_was_updated": true,
+        "km_to_dist.km_to_dist": 0,
       });
 
     // 3. In transit by rail in RF
@@ -100,8 +99,7 @@ export const getContainerStats = async (): Promise<ContainerStatsWithIds> => {
       await getCountAndIds({
         container_number: { $ne: null },
         store_arrive_date_update: false,
-        "km_to_dist.km_to_dist": { $ne: "0" },
-        "km_to_dist.dist_was_updated": true,
+        "km_to_dist.km_to_dist": { $gt: 0, $ne: null },
         hidden: false,
       });
 
