@@ -75,12 +75,13 @@ export const getContainerStats = async (): Promise<ContainerStatsWithIds> => {
       const ids = documents.map((doc) => doc._id.toString());
       return { count: documents.length, ids };
     };
-
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     // 1. Total in transit
     const { count: totalInTransit, ids: totalInTransitIds } =
       await getCountAndIds({
         container_number: { $ne: null },
-        store_arrive_date_update: false,
+        store_arrive_date: { $gte: today },
         hidden: false,
       });
 
@@ -88,7 +89,7 @@ export const getContainerStats = async (): Promise<ContainerStatsWithIds> => {
     const { count: readyForPickupInMoscow, ids: readyForPickupInMoscowIds } =
       await getCountAndIds({
         container_number: { $ne: null },
-        store_arrive_date_update: false,
+        store_arrive_date: { $gte: today },
         declaration_issue_date_update: true,
         hidden: false,
         "km_to_dist.km_to_dist": 0,
@@ -153,8 +154,6 @@ export const getContainerStats = async (): Promise<ContainerStatsWithIds> => {
     });
 
     // 9. Customs declaration issued
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
