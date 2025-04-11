@@ -5,7 +5,7 @@ const router = Router();
 
 const _mailController = new MailController();
 
-// router.get('/test', _mailController.testEmail);
+router.get('/test', _mailController.testEmail);
 router.post('/activation', _mailController.activationEmail);
 router.post('/password-change', _mailController.passwordChangeEmail);
 router.post('/docs-notification', _mailController.docsNotification);

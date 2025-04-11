@@ -34,20 +34,20 @@ class MailService {
     this.transporter = nodemailer.createTransport(options);
   }
 
-  // async testEmail() {
-  //   try {
-  //     await this.transporter.sendMail({
-  //       from: process.env.EMAIL_USER,
-  //       to: process.env.EMAIL_USER,
-  //       subject: 'Test Email',
-  //       text: 'Hello World',
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     await this.transporter.close();
-  //   }
-  // }
+  async testEmail() {
+    try {
+      await this.transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_RECIPIENT,
+        subject: 'Test Email',
+        text: 'Hello World',
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      await this.transporter.close();
+    }
+  }
 
   async activationEmail(notification: ActivationNotification) {
     const { user, link } = notification;
