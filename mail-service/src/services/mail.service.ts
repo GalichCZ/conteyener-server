@@ -36,6 +36,18 @@ class MailService {
 
   async testEmail() {
     try {
+      console.log({
+        host: process.env.EMAIL_HOST,
+        port: Number(process.env.EMAIL_PORT), // Ensure the port is a number
+        secure: false, // Use true if you are using SSL
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+        tls: {
+          rejectUnauthorized: false, // This allows self-signed certificates, if needed
+        },
+      });
       await this.transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_RECIPIENT,
@@ -130,7 +142,14 @@ class MailService {
   }
 
   protected async sendMail(mailOptions: nodemailer.SendMailOptions) {
-    return await this.transporter.sendMail(mailOptions);
+    try {
+      await this.transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.error('Error sending email:', error);
+    } finally {
+      // Optional: close transporter only if not reused or if you want to ensure no open connections
+      await this.transporter.close(); // Uncomment if needed
+    }
   }
 }
 
