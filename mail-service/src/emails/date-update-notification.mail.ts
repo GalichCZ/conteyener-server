@@ -27,7 +27,7 @@ export const dateUpdateNotificationMail = (data: DateUpdateNotification) => {
             <h1 style="margin: 0;">Обновление данных по контейнеру ${container_number}</h1>
           </div>
           <div style="padding: 30px;">
-            <p style="font-size: 16px; color: #333333;">Км. до станции назначения: ${km_to_dist}</p>
+            <p style="font-size: 16px; color: #333333;">Км. до станции назначения: ${km_to_dist.km_to_dist}</p>
             <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
               <tr style="background-color: #f2f2f2;">
                 <th style="border: 1px solid #ddd; padding: 10px; font-size: 14px;">Товар</th>
